@@ -1,0 +1,42 @@
+.badge {
+        padding: 0.375rem 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: inline-block;
+        text-align: center;
+        line-height: 1;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 1rem;
+
+        &_primary{
+            background-color: #1976D2;
+            color: white
+        }
+        &_light{
+            background-color: #d1d5db;
+            color: #374151;
+        }
+        &_secondary{
+            background-color: #9ca3af;
+            color: white;
+        }
+
+}
+
+.cart-badge{
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    padding: 0.3rem 0.375rem;
+    border-radius: 1rem;
+    background-color: rgb(239 68 68);
+    color: #FFFFFF;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: baseline;
+    // min-width: 20px;
+    // max-width: 24px;
+    line-height: 1;
+}

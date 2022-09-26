@@ -1,0 +1,35 @@
+.product-descr {
+    &__nav-item {
+        >a {
+            color: #6b7280;
+            border-color: transparent;
+            &:hover {
+                color: #1976D2;
+                border-color: #1976D2;
+            }
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+    // active
+    &__nav-item.active {
+        >a {
+            color:#1976D2;
+            border-color:#1976D2;
+        }
+    }
+    // disabled
+    &__nav-item.disabled {
+        >a {
+            color:#6b7280;
+            border-color:transparent;
+            cursor: default;
+            opacity: .5;
+            &:hover{
+                color:#6b7280;
+                border-color:transparent;
+            }
+        }
+    }
+}

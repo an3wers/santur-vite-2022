@@ -1,0 +1,58 @@
+.carousel-cards {
+  text-align: left !important;
+  margin-left: -12px;
+  margin-right: -12px;
+  .carousel__item {
+    // margin-top: 0.5rem;
+    // margin-bottom: 0.5rem;
+    height: 100%;
+  }
+  .carousel__track {
+    align-items: stretch;
+  }
+  .carousel__slide {
+    padding: 20px 12px;
+    // margin-right: 1.5rem;
+  }
+  .carousel__slide:first-child {
+    // padding-left: 0px;
+  }
+  .carousel__slide:last-child {
+    // padding-right: 0px;
+    // margin-right: 0;
+  }
+  &__navigation {
+    background-color: white !important;
+    width: 48px !important;
+    height: 48px !important;
+    -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.15);
+    -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.15);
+    box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.15);
+  }
+
+  &__pagination {
+    
+    .carousel__pagination-button {
+      background-color: #7EADDB !important;
+      width: 1rem;
+    }
+    
+    .carousel__pagination-button--active {
+      background-color: #1976D2 !important;
+    }
+  }
+
+  .carousel__icon {
+    fill: #6b7280;
+    width: 32px;
+    height: 32px;
+  }
+
+  .carousel__prev{
+    left: 12px;
+  }
+  .carousel__next {
+    right: 12px;
+  }
+
+}

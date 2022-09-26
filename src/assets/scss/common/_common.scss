@@ -1,0 +1,173 @@
+@import './header.scss';
+@import './buttons.scss';
+@import './home.scss';
+@import './catatog.scss';
+@import './footer.scss';
+@import './product.scss';
+@import './profile.scss';
+@import './carousel.scss';
+@import './badges.scss';
+@import './popper.scss';
+// @import '../../../node_modules/vue3-carousel/dist/carousel.css';
+
+/* GLOBAL*/
+
+h1,
+.h1 {
+  font-size: 1.875rem; /* 30px */
+  line-height: 2.25rem; /* 36px */
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+h2,
+.h2 {
+  font-size: 1.5rem; /* 24px */
+  line-height: 2rem; /* 32px */
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+h3,
+.h3 {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.75rem; /* 28px */
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+a {
+  color: #1976D2;
+  text-decoration: underline;
+  &:hover {
+    color: #1565C0;
+    text-decoration: none;
+  }
+  &:focus{
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, .2);
+    border-radius: 0.25rem;
+  }
+}
+
+body.catalog-open, body.modal-open {
+  overflow-y: hidden;
+}
+
+.container {
+  min-width: 1048px;
+}
+
+.backdrop {
+  position: fixed;
+  background-color:#111827;
+  opacity: .5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: none;
+}
+
+.backdrop.show {
+  display: block;
+}
+
+.default-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-wrapper {
+  flex-grow: 1;
+}
+
+// .dropdown-menu {
+//     max-width: 16rem;
+// }
+
+// .dropdown-item {
+//     white-space: normal;
+// }
+
+.app-message {
+  position: fixed;
+  width: 28rem;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.pageloader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.all-pageloader {
+
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+}
+
+.pageloader-backdrop {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba($color: #ffffff, $alpha: 0.65);
+
+}
+
+// Скрыть стрелки у цифрового инпута
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+::placeholder {
+  color:#9ca3af !important;
+}
+
+// button:disabled,
+// button[disabled] {
+
+// }
+
+
+// scrollbar
+
+input[type=radio] {
+  color: #1976D2;
+}
+input[type=radio]:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, .2);
+}
+
+// Modal
+
+.app-modal-body {
+  max-height: calc(100vh - 120px);
+}

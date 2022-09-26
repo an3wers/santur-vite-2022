@@ -1,0 +1,54 @@
+
+// TOP SLIDER
+// .home-slider {
+//     // display: block;
+    
+
+//     // &__body{
+//     //     // height: 400px;
+//     // }
+// }
+
+
+// NARROW SLIDER
+.narrow-slider {
+    // &__body{
+    //     height: 168px;
+    // }
+}
+
+// POPULAR CATEGORY
+.pop-category-card {
+    &__image-block {
+        min-width: 6rem;
+        min-height: 6rem;
+        width: 6rem;
+        height: 6rem;
+    }
+
+    &__title {
+        font-size: 0.9375rem;
+    }
+}
+
+// SALE PRODUCTS
+
+.sale-products-list {
+    .product-body {
+        // height: 420px;
+        // max-height: 420px;
+
+        &__name {
+            // max-height: 80px;
+            // font-size: 0.8125rem;
+        }
+    }
+}
+
+// BOTTOM BANNER
+
+.bottom-banner {
+    &__body {
+        max-height: 400px;
+    }
+}
