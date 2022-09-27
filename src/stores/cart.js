@@ -147,10 +147,11 @@ export const useCartStore = defineStore("cart", {
         console.log(error);
       }
     },
-    async cartConfirm(payMethod = "бн", comment, address) {
+    async cartConfirm(payMethod, comment, address) {
       try {
         // CartToOrd/?pay=бн&cmnt=...&address=...
         // const response = await useCustomFetch(`apissz/CartToOrd/?pay=бн&cmnt=...&address=...`)
+        debugger
         const response = await fetch(
           `https://isantur.ru/apissz/CartToOrd/?pay=${payMethod}&cmnt=${comment}&address=${address}`,
           {

@@ -94,14 +94,15 @@ async function orderSubmitHandler() {
     );
   } else {
     router.push({ path: "/thank", query: { order: res } });
-    // navigateTo({ path: '/thank', query: res })
+   
   }
 
   // console.log(
   //   'ЗАКАЗ:',
   //   getMethod.value,
   //   deliveryAddress.value,
-  //   orderComment.value
+  //   orderComment.value,
+  //   payMethod.value
   // )
 }
 </script>
