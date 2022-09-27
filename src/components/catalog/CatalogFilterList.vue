@@ -70,7 +70,7 @@
       <div
         v-if="catalogStore.displaySelectedFilterBtn"
         @click="catalogStore.handleDisplaySelectedFilterBtn"
-        class="fixed bottom-8 cursor-pointer py-2 px-4 bg-white border rounded-md shadow-md text-center w-60 2xl:w-80 filter-float-btn z-10 text-primary font-semibold"
+        class="fixed bottom-8 cursor-pointer py-2.5 px-4 bg-gray-700 border border-transparent rounded-md shadow-md text-center w-72 xl:w-64 filter-float-btn z-10 text-white font-semibold"
       >
         Товаров найдено: {{ categoryStore.productCount }} шт.
       </div>

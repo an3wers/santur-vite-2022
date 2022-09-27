@@ -14,7 +14,7 @@
       <app-page-error v-if="mainStore.pageError" />
 
       <div v-else class="grid grid-cols-12 gap-6">
-        <div class="col-span-3">
+        <div class="col-span-4 xl:col-span-3">
           <div v-if="getIsTn">
             <catalog-subcategory :subcategory="getSubcatgory" />
           </div>
@@ -27,7 +27,7 @@
             :filters="categoryStore.categoryFilters"
           />
         </div>
-        <div class="col-span-9 relative">
+        <div class="col-span-8 xl:col-span-9 relative">
           <!-- TODO:  mainStore.pageLoader тут не нужен mainStore-->
           <page-loader v-if="!categoryIsUpdated" />
 
