@@ -8,6 +8,7 @@ export const useProfileStore = defineStore('profile', {
     return {
       isLoaded: false,
       profile: null,
+      // ordersForMerge: [],
       menu: [
         {
           name: 'Данные профиля',

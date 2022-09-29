@@ -6,10 +6,11 @@
         :key="order.ID"
         :order="order"
         :isOrderMergeMode="isOrderMergeMode"
+        :mergeOrders="mergeOrders"
+        @onOrderForMerge="onMerge"
       />
     </div>
     <page-loader v-if="!isLoaded" />
-
     <orders-empty-state v-if="!orders.length" />
   </div>
 </template>
@@ -18,6 +19,7 @@
 import OrderPreview from '@/components/profile/orderhistory/OrderPreview.vue'
 import OrdersEmptyState from '@/components/profile/orderhistory/OrdersEmptyState.vue'
 import PageLoader from '@/components/loaders/PageLoader.vue'
+
 defineProps({
   isLoaded: {
     type: Boolean,
@@ -29,6 +31,17 @@ defineProps({
   },
   isOrderMergeMode: {
     type: Boolean
+  },
+  mergeOrders: {
+    type: Array
   }
 })
+
+const emits = defineEmits(['merge'])
+
+function onMerge(selected, id) {
+  // console.log(selected, id)
+  emits('merge', selected, id)
+
+}
 </script>

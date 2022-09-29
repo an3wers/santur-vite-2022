@@ -147,13 +147,18 @@ export const useCartStore = defineStore("cart", {
         console.log(error);
       }
     },
-    async cartConfirm(payMethod, comment, address) {
+    async cartConfirm(payMethod, comment, address, tip) {
       try {
         // CartToOrd/?pay=бн&cmnt=...&address=...
         // const response = await useCustomFetch(`apissz/CartToOrd/?pay=бн&cmnt=...&address=...`)
-        debugger
+        /*
+        для заказа tip=ord, 
+        для черновика tip=draft, 
+        для прайса tip=price
+        */
+       debugger
         const response = await fetch(
-          `https://isantur.ru/apissz/CartToOrd/?pay=${payMethod}&cmnt=${comment}&address=${address}`,
+          `https://isantur.ru/apissz/CartToOrd/?pay=${payMethod}&cmnt=${comment}&address=${address}&tip=${tip}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -162,7 +167,7 @@ export const useCartStore = defineStore("cart", {
         );
         const data = await response.json();
         if (data.success) {
-          console.log("Confirm order", data);
+          // console.log("Confirm order", data);
           return data.data;
         } else {
           throw new Error(data.message);

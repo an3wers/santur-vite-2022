@@ -71,6 +71,7 @@
         :disabled="!authStore.getIsAuth"
         btnType="outline"
         btnSize="lg"
+        @click="saveOrderHandler"
         >Сохранить заказ</app-button
       >
     </div>
@@ -82,14 +83,17 @@ import { useCartStore } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import AppButton from "@/components/UI/Buttons/AppButton.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import AppSpinnerMedium from "@/components/loaders/AppSpinnerMedium.vue";
 import AppSelector from "@/components/UI/Forms/AppSelector.vue";
 import { useProfileStore } from "@/stores/profile";
+import { useAppMessage } from "../../stores/appMessage";
 
 const profileStore = useProfileStore();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
-
+const appMessageStore = useAppMessage();
+const router = useRouter();
 const contarctSelected = ref(profileStore.profile.subjInfo.dgcode || "");
 
 async function contractHandler(value) {
@@ -97,5 +101,20 @@ async function contractHandler(value) {
   // await cartStore.getCart()
   //  ? update cart
   console.log("Contarct change", value);
+}
+
+async function saveOrderHandler() {
+  const res = await cartStore.cartConfirm("бн", "", "", "draft");
+  if (res instanceof Error) {
+    // При сохранении заказа произошла ошибка
+    appMessageStore.open(
+      "error",
+      "При сохранении заказа произошла ошибка",
+      "error"
+    );
+  } else {
+    // Заказ сохранен
+    router.push({ name: "thank", query: { draft: res } });
+  }
 }
 </script>

@@ -27,7 +27,7 @@
           >Изменить</app-button
         >
         <app-button :disabled="!deleteAvailable" btnType="secondary"
-          >Удалить</app-button
+          >Отменить</app-button
         >
 
         <Menu as="div" class="relative inline-block text-left">

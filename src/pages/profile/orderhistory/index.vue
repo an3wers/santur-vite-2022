@@ -18,17 +18,21 @@
           @onChangeStatus="changeStatusHandler"
           @onCleanAllFilters="cleanAllFiltersHandler"
           @openModalWithProducts="openModalWithProductsHandler"
+          @submitMerge="submitMergeHandler"
           :orderSearchValue="ordersParams.search"
           :timeRangeOptions="timeRangeOptions"
           :selectedTimeRange="selectedTimeRange"
           :statusOptions="statusOptions"
           :selectedStatus="ordersParams.state"
+          :mergeOrders="mergeOrders"
         />
         <orders-list
           v-if="isPageLoaded"
           :isLoaded="isLoadOrders"
           :orders="orders"
           :isOrderMergeMode="isOrderMergeMode"
+          @merge="mergeHandler"
+          :mergeOrders="mergeOrders"
         />
         <orders-pagination
           v-if="getIsPagination"
@@ -95,6 +99,7 @@ const statusOptions = ref([]);
 
 const OLDEST_DATE = new Date(2000, 0, 1);
 const TODAY = new Date();
+const TOMORROW = new Date(TODAY.valueOf() + 1000 * 60 * 60 * 24);
 
 const appMessageStore = useAppMessage();
 
@@ -103,14 +108,16 @@ const authStore = useAuthStore();
 
 const isLoadOrders = ref(false);
 const isPageLoaded = ref(false);
-const isOrderMergeMode = ref(false);
+
+const isOrderMergeMode = ref(true);
+const mergeOrders = ref([])
 
 // default state
 const orders = ref([]);
 const pageCount = ref(1);
 const ordersParams = reactive({
   ldate: useDate(OLDEST_DATE),
-  rdate: useDate(TODAY),
+  rdate: useDate(TOMORROW), // useDate(TODAY),
   search: "",
   state: "1",
   authorId: 0,
@@ -237,23 +244,23 @@ async function changeTimeRangeHandler(event) {
 
     case "today_and_yesterday":
       ordersParams.ldate = useDate(yesterday);
-      ordersParams.rdate = useDate(TODAY);
+      ordersParams.rdate = useDate(TOMORROW);
       selectedTimeRange.value = "today_and_yesterday";
       break;
     case "week":
       ordersParams.ldate = useDate(lastWeek);
-      ordersParams.rdate = useDate(TODAY);
+      ordersParams.rdate = useDate(TOMORROW);
       selectedTimeRange.value = "week";
       break;
     case "month":
       ordersParams.ldate = useDate(lastMonth);
-      ordersParams.rdate = useDate(TODAY);
+      ordersParams.rdate = useDate(TOMORROW);
       selectedTimeRange.value = "month";
       break;
 
     default:
       ordersParams.ldate = useDate(OLDEST_DATE);
-      ordersParams.rdate = useDate(TODAY);
+      ordersParams.rdate = useDate(TOMORROW);
       selectedTimeRange.value = "all";
       break;
   }
@@ -275,7 +282,7 @@ async function changeStatusHandler(event) {
 async function cleanAllFiltersHandler() {
   selectedTimeRange.value = "all";
   ordersParams.ldate = useDate(OLDEST_DATE);
-  ordersParams.rdate = useDate(TODAY);
+  ordersParams.rdate = useDate(TOMORROW);
   ordersParams.state = "1";
   ordersParams.authorId = 0;
   isLoadOrders.value = false;
@@ -291,4 +298,20 @@ function closeProductsModalHandler(event) {
   // console.log(event);
   isModalProductsList.value = false;
 }
+
+function mergeHandler(selected, id) {
+  console.log(selected, id)
+
+  if(selected) {
+    mergeOrders.value.push(id)
+  } else {
+    mergeOrders.value = mergeOrders.value.filter(el => el !== id)
+  }
+
+}
+
+function submitMergeHandler() {
+  mergeOrders.value = []
+}
+
 </script>

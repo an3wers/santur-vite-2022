@@ -29,7 +29,7 @@ const routes = [
   { path: "/product/:id", component: Product },
   { path: "/cart", component: Cart },
   { path: "/checkout", component: Checkout },
-  { path: "/thank", component: Thank },
+  { path: "/thank", name: 'thank', component: Thank },
   { path: "/registration", component: Registration },
   { path: "/uikit", component: Uikit },
   { path: "/profile/userinfo", component: UserInfo },

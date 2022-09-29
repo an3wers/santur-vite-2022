@@ -83,7 +83,8 @@ async function orderSubmitHandler() {
   const res = await cartStore.cartConfirm(
     payMethod.value,
     orderComment.value,
-    deliveryAddress.value
+    deliveryAddress.value,
+    "ord"
   );
 
   if (res instanceof Error) {
@@ -94,7 +95,6 @@ async function orderSubmitHandler() {
     );
   } else {
     router.push({ path: "/thank", query: { order: res } });
-   
   }
 
   // console.log(

@@ -36,7 +36,8 @@
           </option>
         </app-selector-slots>
 
-        <app-selector-slots
+        <!-- Фильтр по автору -->
+        <!-- <app-selector-slots
           inputSize="md"
           inputType="border"
           v-model="selectedAuthor"
@@ -48,7 +49,7 @@
           >
             {{ author.text }}
           </option>
-        </app-selector-slots>
+        </app-selector-slots> -->
       </div>
       <app-button
         @click="$emit('onCleanAllFilters')"
@@ -89,8 +90,15 @@
           btnSize="md"
           >Товары готовые к отгрузке</app-button
         >
-        <app-button btnType="secondary" btnSize="md"
-          >Объединить заказы</app-button
+        <app-button
+          :disabled="!(mergeOrders.length > 1)"
+          btnType="secondary"
+          btnSize="md"
+          @click="mergeHandler"
+          >Объединить заказы
+          <span class="ml-1" v-if="mergeOrders.length"
+            >({{ mergeOrders.length }})</span
+          ></app-button
         >
       </div>
     </div>
@@ -103,6 +111,9 @@ import AppButton from "@/components/UI/Buttons/AppButton.vue";
 import SearchIcon20 from "@/components/UI/Icons/SearchIcon_20.vue";
 import { ref, computed } from "vue";
 import CloseIcon20 from "@/components/UI/Icons/CloseIcon_20.vue";
+import { useProfileStore } from "@/stores/profile";
+
+const profileStore = useProfileStore();
 
 const props = defineProps({
   orderSearchValue: {
@@ -121,6 +132,9 @@ const props = defineProps({
   statusOptions: {
     type: Array,
   },
+  mergeOrders: {
+    type: Array,
+  },
 });
 
 const emits = defineEmits([
@@ -130,6 +144,7 @@ const emits = defineEmits([
   "onChangeStatus",
   "onCleanAllFilters",
   "openModalWithProducts",
+  'submitMerge'
 ]);
 
 const isRemoveSearchValue = computed(() => {
@@ -146,5 +161,9 @@ const authorOptions = [
 
 function onOpenModalWithProducts() {
   emits("openModalWithProducts");
+}
+
+function mergeHandler() {
+  emits('submitMerge')
 }
 </script>

@@ -86,7 +86,7 @@ import orderTable from "@/components/profile/orderhistory/order/orderTable.vue";
 import { useAppMessage } from "@/stores/appMessage";
 import PageLoader from "@/components/loaders/PageLoader.vue";
 
-import { useCustomFetch } from '@/utils/fetch'
+import { useCustomFetch } from "@/utils/fetch";
 
 const appMessageStore = useAppMessage();
 
@@ -110,11 +110,11 @@ async function loadOrder(id) {
     const resp = await useCustomFetch(`apissz/getord/?id=${id}`);
     if (resp.success) {
       order.value = resp.data;
+      console.log(order.value)
     } else {
       throw new Error("При загрузке заказа произошла ошибка");
     }
   } catch (error) {
-    console.log(error.message);
     appMessageStore.open("error", error.message, "error");
   } finally {
     orderIsLoaded.value = true;
