@@ -110,7 +110,7 @@ const isLoadOrders = ref(false);
 const isPageLoaded = ref(false);
 
 const isOrderMergeMode = ref(true);
-const mergeOrders = ref([])
+const mergeOrders = ref([]);
 
 // default state
 const orders = ref([]);
@@ -300,18 +300,43 @@ function closeProductsModalHandler(event) {
 }
 
 function mergeHandler(selected, id) {
-  console.log(selected, id)
+  console.log(selected, id);
 
-  if(selected) {
-    mergeOrders.value.push(id)
+  if (selected) {
+    mergeOrders.value.push(id);
   } else {
-    mergeOrders.value = mergeOrders.value.filter(el => el !== id)
+    mergeOrders.value = mergeOrders.value.filter((el) => el !== id);
   }
-
 }
 
-function submitMergeHandler() {
-  mergeOrders.value = []
-}
+async function submitMergeHandler() {
+  // MergeOrders/?orders=…
 
+  const ordersStr = mergeOrders.value.join(",");
+  // console.log(ordersStr)
+  debugger;
+  try {
+    isLoadOrders.value = false;
+    const res = await useCustomFetch(`apissz/MergeOrders/?orders=${ordersStr}`);
+
+    if (res.success) {
+      // console.log(res.data);
+      await loadOrders(ordersParams);
+      mergeOrders.value = [];
+      appMessageStore.openWithTimer(
+        "success",
+        `Заказы объединены, новый заказ №${res.data}`,
+        "success"
+      );
+    } else {
+      throw new Error(
+        res.message || "При объединении заказов произошла ошибка"
+      );
+    }
+  } catch (error) {
+    appMessageStore.open("error", error.message, "error");
+  } finally {
+    isLoadOrders.value = true;
+  }
+}
 </script>
