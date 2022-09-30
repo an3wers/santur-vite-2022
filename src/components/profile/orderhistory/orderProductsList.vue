@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-if="!data.length">
-
+        <div v-if="!isModalProductsLoaded">Загрузка...</div>
+        <div v-else-if="data.length && isModalProductsLoaded">
             <table class="w-full text-sm text-left">
                 <thead class="text-xs tracking-tight text-gray-900 uppercase bg-slate-100">
                     <tr class="border-b border-gray-300">
@@ -57,11 +57,12 @@
 
                 </tbody>
             </table>
-
         </div>
-        <div v-else>
+        
+        <div v-else-if="!data.length && isModalProductsLoaded">
             <p>Товаров готовых к отгрузке нет.</p>
         </div>
+   
     </div>
 </template>
 
@@ -71,6 +72,10 @@
         data: {
             type: Array,
             default: [],
+        },
+        isModalProductsLoaded: {
+            type: Boolean,
+            default: false
         }
     })
 

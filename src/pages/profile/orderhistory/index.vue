@@ -54,7 +54,10 @@
         <template #header> Товары готовые к отгрузке </template>
         <template #body>
           <!-- products -->
-          <order-products-list />
+          <order-products-list
+            :isModalProductsLoaded="isModalProductsLoaded"
+            :data="modalProducts"
+          />
         </template>
       </app-modal>
     </Teleport>
@@ -74,7 +77,7 @@ import { useAppMessage } from "@/stores/appMessage";
 import OrdersPagination from "@/components/profile/orderhistory/OrdersPagination.vue";
 import AppModal from "@/components/modal/AppModal.vue";
 import PageLoader from "@/components/loaders/PageLoader.vue";
-import orderProductsList from "@/components/profile/orderhistory/order/orderProductsList.vue";
+import orderProductsList from "@/components/profile/orderhistory/orderProductsList.vue";
 import { useDate } from "@/utils/helpers";
 import { useCustomFetch } from "@/utils/fetch";
 
@@ -108,6 +111,7 @@ const authStore = useAuthStore();
 
 const isLoadOrders = ref(false);
 const isPageLoaded = ref(false);
+const isModalProductsLoaded = ref(false);
 
 const isOrderMergeMode = ref(true);
 const mergeOrders = ref([]);
@@ -125,6 +129,8 @@ const ordersParams = reactive({
   qtyOnPage: 20,
   sort: "regdate_down",
 });
+
+const modalProducts = ref([]);
 
 const getIsPagination = computed(() => {
   return pageCount.value > 1;
@@ -290,8 +296,28 @@ async function cleanAllFiltersHandler() {
   isLoadOrders.value = true;
 }
 
-function openModalWithProductsHandler() {
+async function openModalWithProductsHandler() {
+  /*
+    запускаем лоадер
+    делаем запрос на загрузку товаров
+    выключаем лоадер
+
+    GetComlectedOrders/?separate=…
+    separate=Y – товары отдельно по заказам,=N – товары скопом
+
+  */
   isModalProductsList.value = true;
+  try {
+    const res = await useCustomFetch("apissz/GetComlectedOrders/?separate=Y");
+    if (res.success) {
+    } else {
+      throw new Error(res.message || "При загрузке заказов произошла ошибка");
+    }
+  } catch (error) {
+    appMessageStore.open("error", error.message, "error");
+  } finally {
+    isModalProductsLoaded.value = true;
+  }
 }
 
 function closeProductsModalHandler(event) {
@@ -310,11 +336,7 @@ function mergeHandler(selected, id) {
 }
 
 async function submitMergeHandler() {
-  // MergeOrders/?orders=…
-
   const ordersStr = mergeOrders.value.join(",");
-  // console.log(ordersStr)
-  debugger;
   try {
     isLoadOrders.value = false;
     const res = await useCustomFetch(`apissz/MergeOrders/?orders=${ordersStr}`);
