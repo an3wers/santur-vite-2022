@@ -310,6 +310,24 @@ async function openModalWithProductsHandler() {
   try {
     const res = await useCustomFetch("apissz/GetComlectedOrders/?separate=Y");
     if (res.success) {
+      // console.log(res)
+
+      let ordersTmp = []
+      let productsTmp = []
+
+      ordersTmp = res.data.orders
+      productsTmp = res.data.goodies
+
+      ordersTmp.forEach(el => {
+
+        const arr = productsTmp.filter(prod => prod.orderId === el.id)
+        el.products = arr
+        
+      });
+
+      // console.log('ordersTmp', ordersTmp)
+      modalProducts.value = ordersTmp
+
     } else {
       throw new Error(res.message || "При загрузке заказов произошла ошибка");
     }

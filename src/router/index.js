@@ -4,23 +4,23 @@ import { useAuthStore } from "@/stores/auth";
 
 // import Category from '@/pages/catalog/category.vue'
 
-const Home = () => import('@/pages/home.vue')
-const Catalog = () => import('@/pages/catalog/index.vue')
-const Category = () => import('@/pages/catalog/category.vue')
-const Registration = () => import('@/pages/registration.vue')
-const Cart = () => import('@/pages/cart.vue')
-const Checkout = () => import('@/pages/checkout.vue')
-const Thank = () => import('@/pages/thank.vue')
-const Uikit = () => import('@/pages/uikit.vue')
-const Product = () => import('@/pages/product/index.vue')
-const UserInfo = () => import('@/pages/profile/userinfo.vue')
-const Company = () => import('@/pages/profile/company.vue')
-const Office = () => import('@/pages/profile/office.vue')
-const Delivery = () => import('@/pages/profile/delivery.vue')
-const Favorites = () => import('@/pages/profile/favorites.vue')
-const Feedback = () => import('@/pages/profile/feedback.vue')
-const OrderHistory = () => import('@/pages/profile/orderhistory/index.vue')
-const Order = () => import('@/pages/profile/orderhistory/order.vue')
+const Home = () => import("@/pages/home.vue");
+const Catalog = () => import("@/pages/catalog/index.vue");
+const Category = () => import("@/pages/catalog/category.vue");
+const Registration = () => import("@/pages/registration.vue");
+const Cart = () => import("@/pages/cart.vue");
+const Checkout = () => import("@/pages/checkout.vue");
+const Thank = () => import("@/pages/thank.vue");
+const Uikit = () => import("@/pages/uikit.vue");
+const Product = () => import("@/pages/product/index.vue");
+const UserInfo = () => import("@/pages/profile/userinfo.vue");
+const Company = () => import("@/pages/profile/company.vue");
+const Office = () => import("@/pages/profile/office.vue");
+const Delivery = () => import("@/pages/profile/delivery.vue");
+const Favorites = () => import("@/pages/profile/favorites.vue");
+const Feedback = () => import("@/pages/profile/feedback.vue");
+const OrderHistory = () => import("@/pages/profile/orderhistory/index.vue");
+const Order = () => import("@/pages/profile/orderhistory/order.vue");
 
 const routes = [
   { path: "/", component: Home },
@@ -29,7 +29,7 @@ const routes = [
   { path: "/product/:id", component: Product },
   { path: "/cart", component: Cart },
   { path: "/checkout", component: Checkout },
-  { path: "/thank", name: 'thank', component: Thank },
+  { path: "/thank", name: "thank", component: Thank },
   { path: "/registration", component: Registration },
   { path: "/uikit", component: Uikit },
   { path: "/profile/userinfo", component: UserInfo },
@@ -48,7 +48,7 @@ const router = createRouter({
   routes,
   scrollBehavior(to, from, savedPosition) {
     // always scroll to top
-    return { top: 0 }
+    return { top: 0 };
   },
 });
 
@@ -64,6 +64,11 @@ router.beforeEach((to, from, next) => {
   if (authStore.getIsOpenAuthModal) {
     authStore.closeAuthModal();
   }
+
+  if (document.body.classList.contains("modal-open")) {
+    document.body.classList.remove("modal-open");
+  }
+
   next();
 });
 
