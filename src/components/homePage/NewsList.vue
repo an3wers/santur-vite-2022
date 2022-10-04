@@ -1,6 +1,6 @@
 <template>
   <div class="news-list">
-    <div class="grid grid-cols-4 gap-6">
+    <div class="grid grid-cols-2 xl:grid-cols-4 gap-6">
       <div v-for="news in news" :key="news.id" class="news-list__body flex-col">
         <div class="mb-2">
           {{ news.date }}

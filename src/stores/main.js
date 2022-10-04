@@ -4,7 +4,7 @@ export const useMainStore = defineStore('main', {
   state: () => {
     return {
         pageError: false,
-        pageLoader: false
+        pageLoader: false,
     }
   },
   getters: {

@@ -20,6 +20,7 @@
         :editAvailable="order.edit_available"
         :deleteAvailable="order.delete_available"
         @onPrintPage="printPageHandler"
+        @onEditOrder="editOrderHandler"
       />
 
       <!-- main -->
@@ -85,10 +86,13 @@ import orderComments from "@/components/profile/orderhistory/order/orderComments
 import orderTable from "@/components/profile/orderhistory/order/orderTable.vue";
 import { useAppMessage } from "@/stores/appMessage";
 import PageLoader from "@/components/loaders/PageLoader.vue";
-
+import { useCartStore } from "@/stores/cart";
 import { useCustomFetch } from "@/utils/fetch";
+import { useOrderStore } from "@/stores/order";
 
 const appMessageStore = useAppMessage();
+const cartStore = useCartStore();
+const orderStore = useOrderStore();
 
 const router = useRouter();
 const route = useRoute();
@@ -110,7 +114,7 @@ async function loadOrder(id) {
     const resp = await useCustomFetch(`apissz/getord/?id=${id}`);
     if (resp.success) {
       order.value = resp.data;
-      console.log(order.value)
+      // console.log(order.value);
     } else {
       throw new Error("При загрузке заказа произошла ошибка");
     }
@@ -131,5 +135,50 @@ function printPageHandler() {
   window.print();
 }
 
-// Изменение заказа, удаление заказа
+async function ordEdit(id) {
+  try {
+    const res = await useCustomFetch(`apissz/EditOrd/?id=${id}`);
+    console.log(res);
+
+    if (res.success) {
+      orderStore.setEditOrder({ id, code: order.value.code });
+      cartStore.getShortCart();
+      cartStore.getCart();
+
+      // router.push({path: '/cart'})
+    } else {
+      throw new Error(
+        res.message || "При редактировании заказа произошла ошибка"
+      );
+    }
+  } catch (error) {
+    appMessageStore.open("error", error.message, "error");
+  }
+}
+
+function editOrderHandler(id) {
+  // EditOrd/?id=...
+  // console.log(id);
+
+  if (cartStore.cartItems.length) {
+    const result = confirm(
+      "В вашей корзине уже есть товары. При редактирование заказа корзина будет очищена. Редактировать заказ?"
+    );
+    if (result) {
+      ordEdit(id);
+    } else {
+      return;
+    }
+  } else {
+    ordEdit(id);
+  }
+
+  /*
+    1. Запрос - редактирование
+    2. Если, что-то в корзине есть, предупредить пользователя, что корзина будет очищена
+    3. Редирект в корзину
+    4. Получние корзины
+    5. Показать полуску, что заказ редактируется
+  */
+}
 </script>

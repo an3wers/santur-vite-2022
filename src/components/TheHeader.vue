@@ -30,9 +30,9 @@
           <catalog-dropdown v-if="catalogStore.getIsMenu" />
         </div>
         <!-- Поиск -->
-        <div class="header__search grow">
+      
           <search-header />
-        </div>
+          
         <!-- Кнопки -->
         <div class="flex space-x-3">
           <!-- component Profile -->
@@ -67,8 +67,8 @@
         <template #header> Войти в профиль </template>
         <template #body>
           <p class="mb-4">
-            Или <RouterLink to="/registration">зарегистрируйтесь</RouterLink>, если
-            аккаунта еще нет.
+            Или <RouterLink to="/registration">зарегистрируйтесь</RouterLink>,
+            если аккаунта еще нет.
           </p>
           <auth-form />
         </template>
@@ -78,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+// import { ref, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import NavHeader from "@/components/appHeader/NavigationHeader.vue";
 import ContactsHeader from "@/components/appHeader/ContactsHeader.vue";
@@ -94,11 +94,13 @@ import AppModal from "@/components/modal/AppModal.vue";
 import { useAuthStore } from "@/stores/auth";
 import HeaderProfile from "@/components/appHeader/HeaderProfile.vue";
 
+
 const authStore = useAuthStore();
 const cartStore = useCartStore();
 const catalogStore = useCatalogStore();
 const router = useRouter();
 const route = useRoute();
+
 
 function closeAuthModalHandler() {
   authStore.closeAuthModal();

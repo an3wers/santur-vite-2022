@@ -87,7 +87,7 @@ export const useCartStore = defineStore("cart", {
           this.cartSumRaw = response.data.summ;
           this.cartItems = response.data.items;
           this.cartWeight = response.data.weight;
-          // console.log('Корзина', response.data)
+          console.log('Корзина', response.data)
           return response.data;
         } else {
           throw new Error("Error cart");
@@ -100,7 +100,7 @@ export const useCartStore = defineStore("cart", {
       try {
         const response = await useCustomFetch("apissz/GetCartShortInfo");
         if (response.success) {
-          // console.log('getShortCart', response.data)
+          console.log('getShortCart', response.data)
           // this.cart = response.data
           this.cartCount = response.data.qtyitems;
           this.cartSum = response.data.summs;

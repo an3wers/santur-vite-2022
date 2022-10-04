@@ -1,5 +1,5 @@
 <template>
-    <button type="button" :class="[typeMap[btnType], sizeMap[btnSize]]" class="inline-flex items-center text-center justify-center rounded-md disabled:opacity-75">
+    <button :type="type" :class="[typeMap[btnType], sizeMap[btnSize]]" class="inline-flex items-center text-center justify-center rounded-md disabled:opacity-75">
         <slot></slot>
     </button>
 </template>
@@ -15,6 +15,10 @@ export default {
         btnSize: {
             type: String,
             default: 'md'
+        },
+        type: {
+            type: String,
+            default: 'button'
         }
     },
 

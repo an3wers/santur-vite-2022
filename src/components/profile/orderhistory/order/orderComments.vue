@@ -7,9 +7,9 @@
                 <p class="text-gray-700 text-[15px]">{{comment}}</p>
             </div>
             <p v-else class="text-center">У заказе нет комментария</p>
-            <div class="text-center">
+            <!-- <div class="text-center">
                 <app-button btnType="outline" btnSize="md">Добавить</app-button>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

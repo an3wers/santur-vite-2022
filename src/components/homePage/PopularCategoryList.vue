@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-4 gap-6">
+  <div class="grid grid-cols-3 xl:grid-cols-4 gap-6">
     <RouterLink
       :to="`/catalog/${cat.tk_id}`"
       v-for="cat in getPopularCategory"

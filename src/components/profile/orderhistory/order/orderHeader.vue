@@ -23,7 +23,7 @@
     </div>
     <div class="col-span-12 xl:col-span-3 space-y-6">
       <div class="flex justify-end space-x-3">
-        <app-button :disabled="!editAvailable" btnType="secondary"
+        <app-button @click="editOrder(id)" :disabled="!editAvailable" btnType="secondary"
           >Изменить</app-button
         >
         <app-button :disabled="!deleteAvailable" btnType="secondary"
@@ -133,6 +133,11 @@ defineProps({
   }
 })
 
-defineEmits(['onPrintPage'])
+const emits = defineEmits(['onPrintPage', 'onEditOrder'])
+
+function editOrder(id) {
+  // EditOrd/?id=...
+  emits('onEditOrder', id)
+}
 
 </script>

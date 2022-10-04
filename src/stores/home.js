@@ -19,7 +19,8 @@ export const useHomeStore = defineStore("home", {
       return state.topSlider;
     },
     getPopularCategory(state) {
-      return state.popularCategory.filter((el, index) => index < 12);
+      // return state.popularCategory.filter((el, index) => index < 12);
+      return state.popularCategory
     },
     getNarrowBanner(state) {
       return state.narrowBanner;
@@ -46,7 +47,7 @@ export const useHomeStore = defineStore("home", {
     },
     async loadPopularCategory() {
       try {
-        const response = await useCustomFetch("apissz/getrecomendtks");
+        const response = await useCustomFetch("apissz/GetRecomendTKs/?top=12");
         if (response.success) {
           this.popularCategory = response.data;
         }

@@ -123,7 +123,7 @@ const getParams = computed(() => {
     return `?tn_id=${currentCat.value.id}`;
   } else {
     // return `?tn_id=${currentCat.value.parent_id}&tk_id=${currentCat.value.id}`
-    return `?tk_id=${currentCat.value.id}`;
+    return route.query.search ? `?tk_id=${currentCat.value.id}&search=${route.query.search}`: `?tk_id=${currentCat.value.id}&search=` ;
   }
 });
 
@@ -144,6 +144,10 @@ const getParamsUrl = computed(() => {
 
   if (categoryStore.inCash) {
     queryObj.incash = 'true'
+  }
+
+  if (route.query.search) {
+    queryObj.search = route.query.search
   }
 
   // return { filter: categoryStore.setedFilters, page: page.value, price: categoryStore.setedFiltersPrice }
@@ -172,6 +176,8 @@ const getBreadcrumbs = computed(() => {
 async function loadCategory() {
   // console.log('route.query', Object.entries(route.query))
 
+  // console.log('route.query', route.query)
+
 
   const tmpPrices = Object.entries(route.query).find((el) => el[0] === "price");
   const tmpIncash = Object.entries(route.query).find((el) => el[0] === "incash");
@@ -182,9 +188,10 @@ async function loadCategory() {
   //   console.log(Object.keys(route.query))
 
   if (
-    Object.keys(route.query).filter((el) => el !== "page" && el !== "price" && el !== "incash")
+    Object.keys(route.query).filter((el) => el !== "page" && el !== "price" && el !== "incash" && el !== "search")
       .length
   ) {
+    // Если в фильтрах что-то есть
     await categoryStore.setFilters(route);
   } else {
     await categoryStore.cleanAllFilter();
@@ -243,6 +250,9 @@ function pushUrlState(payload) {
     }
     if(el[0] === "incash") {
         result.push(`${el[0]}=${el[1]}`);
+    }
+    if(el[0] === 'search') {
+      result.push(`${el[0]}=${el[1]}`);
     }
   });
 
