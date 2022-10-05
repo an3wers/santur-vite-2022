@@ -134,7 +134,7 @@ export const useCategoryStore = defineStore("category", {
 
       // Из роута беру фильтры чекбоксы
       const arrFilter = Object.entries(route.query)
-        .filter((el) => el[0] !== "page" && el[0] !== "price" && el[0] !== "incash")
+        .filter((el) => el[0] !== "page" && el[0] !== "price" && el[0] !== "incash" && el[0] !== "search")
         .map((el) => el.join("="));
       const strFilters = arrFilter.join("&");
 

@@ -2,13 +2,12 @@
   <div class="header__search grow relative">
     <form @submit.prevent="searchRequestSubmit" class="relative">
       <input
-        :value="searchValue"
+        :value="$route.query.search || mainStore.searchValueStore"
         @input="searchHandler($event.target.value)"
         class="pl-4 pr-10 py-2.5 text-lg w-full rounded-md border form-input bg-transparent border-gray-300 focus:border-primary focus:ring focus:ring-blue-200 focus:ring-opacity-50 disabled:bg-gray-100 disabled:text-gray-500"
         type="text"
         placeholder="Найти товары"
-        ref="searchInut"
-        @blur="inputBlurHandler($event)"
+        @blur="inputBlurHandler"
         @focus="inputFocusHandler"
       />
       <!-- <button class="absolute search-icon"><search-icon-24 color="#1976D2" /></button> -->
@@ -25,14 +24,14 @@
     </form>
     <!-- search results -->
     <div
-      v-if="isResultSearch"
+      v-if="mainStore.searchResultStore.length && isResultSearch"
       class="absolute р-44 bg-white w-full shadow-lg px-2 py-6 z-10 rounded-b-lg"
     >
       <ul
         class="min-h-16 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-200 scrollbar-thumb-rounded-md"
       >
         <li
-          v-for="item in searchResult"
+          v-for="item in mainStore.searchResultStore"
           @click="routeHandler(item.tk_id)"
           class="py-2 px-2 block rounded-md hover:bg-slate-100 hover:text-primary mr-2 cursor-pointer"
         >
@@ -46,58 +45,57 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import {useRouter, useRoute} from 'vue-router'
+import { useRouter, useRoute } from "vue-router";
 import SearchIcon24 from "@/components/UI/Icons/SearchIcon_24.vue";
 import AppButtonIcon from "@/components/UI/Buttons/AppButtonIcon.vue";
 import CloseIcon24 from "@/components/UI/Icons/CloseIcon_24.vue";
 import { useCustomFetch } from "@/utils/fetch";
+import { useMainStore } from "@/stores/main";
 
 // const props = defineProps(["searchValue", 'searchInput']);
 // defineEmits(["onInput", "onClear", 'inputBlur']);
 
-const router = useRouter()
-const route = useRoute()
+const router = useRouter();
+const route = useRoute();
+const mainStore = useMainStore();
 
-const searchValue = ref(route.query.search || '');
-const searchResult = ref([]);
-const searchInut = ref(null);
+mainStore.searchValueStore = route.query.search || "";
+
+// const searchValue = ref(route.query.search || '');
+// const searchResult = ref([]);
+// const searchInut = ref(null);
+
 const isResultSearch = ref(false);
-
+// const isSearching = ref(fasle)
 
 const isClearBtn = computed(() => {
-  return !!searchValue.value;
+  return route.query.search || mainStore.searchValueStore;
 });
 
-// onMounted(() => {
-//   console.log('searchInut', searchInut.value)
-// })
-
 function clearSearchHandler() {
-  searchValue.value = "";
-  searchResult.value = [];
-
-console.log()
-
-if(route.params.id) {
-  router.push({path: `/catalog/${route.params.id}`, query:null})
-}
-
-}
-
-function inputBlurHandler(event) {
-  // console.log(event)
-  // console.log('Blur')
+  // searchValue.value = "";
+  // searchResult.value = [];
   
-  const tmr = setTimeout(() => {
-    
-    isResultSearch.value = false;
-    clearTimeout(tmr)
-  }, 300)
+  if (route.params.id) {
+    router.push({ path: `/catalog/${route.params.id}`, query: null });
+  }
+  if (route.path === "/search") {
+    router.push({ path: "/", query: null });
+  }
+  mainStore.searchValueStore = "";
+  mainStore.searchResultStore = [];
+}
 
+function inputBlurHandler() {
+  const tmr = setTimeout(() => {
+    isResultSearch.value = false;
+    clearTimeout(tmr);
+  }, 100);
 }
 
 function inputFocusHandler() {
-  if (searchValue.value && searchResult.value.length) {
+  // if (searchValue.value && searchResult.value.length) {
+  if (mainStore.searchValueStore && mainStore.searchResultStore.length) {
     isResultSearch.value = true;
   }
 }
@@ -105,20 +103,21 @@ function inputFocusHandler() {
 const timer = ref(true);
 
 function searchHandler(value) {
-  searchValue.value = value.trim();
+  // searchValue.value = value.trim();
+  mainStore.searchValueStore = value.trim();
 
   /*
   apissz/quicksearch/?search=…
   https://isantur.ru/apissz/setgoodsearch?tk_id=892833&search=труба
   
   */
-  // console.log(evt)
   /*
     Если произвольный запрос, то роутинг на страницу search
     Роутинг в категорию
   */
 
-  if (searchValue.value) {
+  // if (searchValue.value) {
+  if (mainStore.searchValueStore) {
     isResultSearch.value = true;
 
     if (timer.value) {
@@ -128,13 +127,17 @@ function searchHandler(value) {
 
     timer.value = setTimeout(async () => {
       try {
+        // const res = await useCustomFetch(
+        //   `apissz//quicksearch/?search=${searchValue.value}`
+        // );
         const res = await useCustomFetch(
-          `apissz//quicksearch/?search=${searchValue.value}`
+          `apissz//quicksearch/?search=${mainStore.searchValueStore}`
         );
 
         if (res.success) {
-          searchResult.value = res.data;
-          console.log(res.data);
+          // searchResult.value = res.data;
+          mainStore.searchResultStore = res.data;
+          // console.log(res.data);
         } else {
           throw new Error(res.message || "При поиски произошла ошибка");
         }
@@ -143,19 +146,36 @@ function searchHandler(value) {
       }
 
       clearTimeout(timer.value);
-    }, 1000);
+    }, 700);
   }
 }
- 
-function searchRequestSubmit() {
-  if(searchValue.value) {
-    console.log('searchRequestSubmit', searchValue.value)
+
+async function searchRequestSubmit() {
+  // if (searchValue.value) {
+  //   console.log("searchRequestSubmit", searchValue.value);
+  // }
+
+  if (mainStore.searchValueStore) {
+    router.push({
+      path: "/search",
+      query: { search: mainStore.searchValueStore },
+    });
+    isResultSearch.value = false;
+
+    // const res = await useCustomFetch(
+    //       `apissz//quicksearch/?search=${mainStore.searchValueStore}`
+    //     );
+    // if(res.success) {
+    //   mainStore.searchResultStore = res.data;
+    // }
   }
 }
 
 function routeHandler(id) {
-  console.log(123)
-  router.push({path: `/catalog/${id}`, query:{search: searchValue.value}})
+  // router.push({path: `/catalog/${id}`, query:{search: searchValue.value}})
+  router.push({
+    path: `/catalog/${id}`,
+    query: { search: mainStore.searchValueStore },
+  });
 }
-
 </script>

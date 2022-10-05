@@ -5,6 +5,8 @@ export const useMainStore = defineStore('main', {
     return {
         pageError: false,
         pageLoader: false,
+        searchValueStore: '',
+        searchResultStore: []
     }
   },
   getters: {

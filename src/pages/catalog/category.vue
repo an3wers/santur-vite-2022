@@ -28,7 +28,7 @@
           />
         </div>
         <div class="col-span-8 xl:col-span-9 relative">
-          <!-- TODO:  mainStore.pageLoader тут не нужен mainStore-->
+        
           <page-loader v-if="!categoryIsUpdated" />
 
           <div>
@@ -120,10 +120,11 @@ const getParams = computed(() => {
   //   console.log(currentCat.value);
   if (currentCat.value.parent_id === 0) {
     // return `?tn_id=${currentCat.value.id}&tk_id=0`
-    return `?tn_id=${currentCat.value.id}`;
+    // return `?tn_id=${currentCat.value.id}`;
+    return route.query.search ? `?tn_id=${currentCat.value.id}&search=${route.query.search}`: `?tn_id=${currentCat.value.id}&search=`;
   } else {
     // return `?tn_id=${currentCat.value.parent_id}&tk_id=${currentCat.value.id}`
-    return route.query.search ? `?tk_id=${currentCat.value.id}&search=${route.query.search}`: `?tk_id=${currentCat.value.id}&search=` ;
+    return route.query.search ? `?tk_id=${currentCat.value.id}&search=${route.query.search}`: `?tk_id=${currentCat.value.id}&search=`;
   }
 });
 
@@ -312,13 +313,13 @@ async function handleChangePage(p) {
   categoryIsUpdated.value = false;
   page.value = p;
   pushUrlState(getParamsUrl.value);
-  await categoryStore.loadProducts(page.value);
-
+  
   window.scrollTo({
     top: 0,
     behavior: "smooth",
   });
-
+  
+  await categoryStore.loadProducts(page.value);
   categoryIsUpdated.value = true;
 }
 

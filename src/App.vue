@@ -61,6 +61,7 @@ async function loadState() {
 
 loadState();
 
+
 // check if catalog dawnloaded, then do not load
 // if (!catalogStore.productCatalog.length) {
 // await catalogStore.loadCatalog();
