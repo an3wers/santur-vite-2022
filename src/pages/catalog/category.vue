@@ -109,7 +109,7 @@ const getSubcatgory = computed(() => {
 });
 
 const getCatalogTitle = computed(() => {
-  if (!!currentCat.value) {
+  if (currentCat.value) {
     return currentCat.value.name;
   } else {
     return "";
@@ -117,7 +117,9 @@ const getCatalogTitle = computed(() => {
 });
 
 const getParams = computed(() => {
-  //   console.log(currentCat.value);
+
+  if(currentCat.value) {
+      //   console.log(currentCat.value);
   if (currentCat.value.parent_id === 0) {
     // return `?tn_id=${currentCat.value.id}&tk_id=0`
     // return `?tn_id=${currentCat.value.id}`;
@@ -126,6 +128,11 @@ const getParams = computed(() => {
     // return `?tn_id=${currentCat.value.parent_id}&tk_id=${currentCat.value.id}`
     return route.query.search ? `?tk_id=${currentCat.value.id}&search=${route.query.search}`: `?tk_id=${currentCat.value.id}&search=`;
   }
+  } else {
+    return undefined
+  }
+
+
 });
 
 const getParamsUrl = computed(() => {
@@ -183,7 +190,12 @@ async function loadCategory() {
   const tmpPrices = Object.entries(route.query).find((el) => el[0] === "price");
   const tmpIncash = Object.entries(route.query).find((el) => el[0] === "incash");
 
-  await categoryStore.setCategory(getParams.value);
+  if(getParams.value) {
+    await categoryStore.setCategory(getParams.value);
+  } else {
+    router.replace({name: 'NotFound'})
+  }
+
 
   //   console.log(route.query)
   //   console.log(Object.keys(route.query))

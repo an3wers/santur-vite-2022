@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useCatalogStore } from "@/stores/catalog";
 import { useAuthStore } from "@/stores/auth";
-import { useMainStore } from '@/stores/main' 
+import { useMainStore } from "@/stores/main";
 
 // import Category from '@/pages/catalog/category.vue'
 
@@ -22,8 +22,9 @@ const Favorites = () => import("@/pages/profile/favorites.vue");
 const Feedback = () => import("@/pages/profile/feedback.vue");
 const OrderHistory = () => import("@/pages/profile/orderhistory/index.vue");
 const Order = () => import("@/pages/profile/orderhistory/order.vue");
-const Search = () => import('@/pages/search.vue')
-const News = () => import('@/pages/about/news/index.vue')
+const Search = () => import("@/pages/search.vue");
+const News = () => import("@/pages/about/news/index.vue");
+const NotFound = () => import("@/pages/404.vue");
 
 const routes = [
   { path: "/", component: Home },
@@ -44,8 +45,9 @@ const routes = [
   { path: "/profile/feedback", component: Feedback },
   { path: "/profile/orderhistory", component: OrderHistory },
   { path: "/profile/orderhistory/:id", component: Order },
-  { path: '/search', component: Search},
-  { path: '/about/news', component: News}
+  { path: "/search", component: Search },
+  { path: "/about/news", component: News },
+  { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
 ];
 
 const router = createRouter({
@@ -61,7 +63,7 @@ router.beforeEach((to, from, next) => {
   // console.log("beforeEach");
   const catalogStore = useCatalogStore();
   const authStore = useAuthStore();
-  const mainStore = useMainStore()
+  const mainStore = useMainStore();
 
   if (catalogStore.$state.isMenu) {
     catalogStore.handleMenu();
@@ -76,7 +78,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (mainStore.searchValueStore && !to.query.search) {
-    mainStore.searchValueStore = ''
+    mainStore.searchValueStore = "";
     // mainStore.searchResultStore = []
   }
 

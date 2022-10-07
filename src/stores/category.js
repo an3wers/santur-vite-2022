@@ -34,11 +34,13 @@ export const useCategoryStore = defineStore("category", {
         // TODO throw
         if (response.success) {
           // return response
+          return response;
+        } else {
+          throw new Error(response.message);
         }
-        return response;
       } catch (error) {
         mainStore.pageError = true;
-        console.log(error);
+        // console.log(error);
       }
     },
 
@@ -56,12 +58,12 @@ export const useCategoryStore = defineStore("category", {
           this.inCash = response.data.incash;
         } else {
           // TODO Check error.message
-          throw new Error(response?.message);
+          throw new Error(response.message || 'При загрузке товаров произошла ошибка');
         }
       } catch (error) {
         // Вывожу экран с ошибкой
         mainStore.pageError = true;
-        console.log(error);
+        console.log(error.message);
       }
     },
 
@@ -134,7 +136,13 @@ export const useCategoryStore = defineStore("category", {
 
       // Из роута беру фильтры чекбоксы
       const arrFilter = Object.entries(route.query)
-        .filter((el) => el[0] !== "page" && el[0] !== "price" && el[0] !== "incash" && el[0] !== "search")
+        .filter(
+          (el) =>
+            el[0] !== "page" &&
+            el[0] !== "price" &&
+            el[0] !== "incash" &&
+            el[0] !== "search"
+        )
         .map((el) => el.join("="));
       const strFilters = arrFilter.join("&");
 
