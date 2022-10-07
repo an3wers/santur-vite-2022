@@ -19,8 +19,12 @@
         :date="order.regdate"
         :editAvailable="order.edit_available"
         :deleteAvailable="order.delete_available"
+        :isOrderCanceling="isOrderCanceling"
+        :isEditing="isEditing"
         @onPrintPage="printPageHandler"
         @onEditOrder="editOrderHandler"
+        @onCancel="cancelOrderHandler"
+        @onCopy="copyHandler"
       />
 
       <!-- main -->
@@ -40,6 +44,7 @@
             :commentChange="order.comment_change"
             :commentGood="order.comment_good"
             :commentMoney="order.comment_money"
+            :orderIsConfirming="orderIsConfirming"
           />
           <order-table :items="order.items" />
         </div>
@@ -64,6 +69,8 @@
           <order-documents
             :getchetAvailable="order.getchet_available"
             :getupdAvailable="order.getupd_available"
+            @onInvoice="invoiceHandler(order.id)"
+            @onUpd="updHandler(order.id)"
           />
           <order-comments :comment="order.comment" />
         </div>
@@ -98,6 +105,9 @@ const router = useRouter();
 const route = useRoute();
 const order = ref(null);
 const orderIsLoaded = ref(false);
+const isOrderCanceling = ref(false)
+const orderIsConfirming = ref(false);
+const isEditing = ref(false)
 
 // Go back button
 function goToAllOrders() {
@@ -111,6 +121,7 @@ function goToAllOrders() {
 
 async function loadOrder(id) {
   try {
+    orderIsLoaded.value = false;
     const resp = await useCustomFetch(`apissz/getord/?id=${id}`);
     if (resp.success) {
       order.value = resp.data;
@@ -127,8 +138,27 @@ async function loadOrder(id) {
 
 loadOrder(route.params.id);
 
-function confirmOrderHandler(id) {
-  console.log("Confirm order", id);
+async function confirmOrderHandler(id) {
+  // console.log("Confirm order", id);
+
+  try {
+    orderIsConfirming.value = true;
+    const res = await useCustomFetch(`apissz/ToRealize/?id=${id}`);
+
+    if (res.success) {
+      console.log(res);
+      await loadOrder(id);
+      appMessageStore.openWithTimer("success", res.message, "success");
+    } else {
+      throw new Error(
+        res.message || "При подтверждении заказа произошла ошибка"
+      );
+    }
+  } catch (error) {
+    appMessageStore.open("error", error.message, "error");
+  } finally {
+    orderIsConfirming.value = false;
+  }
 }
 
 function printPageHandler() {
@@ -137,15 +167,16 @@ function printPageHandler() {
 
 async function ordEdit(id) {
   try {
+    isEditing.value = true
     const res = await useCustomFetch(`apissz/EditOrd/?id=${id}`);
-    console.log(res);
+
+    console.log("ordEdit", res);
 
     if (res.success) {
       orderStore.setEditOrder({ id, code: order.value.code });
-      cartStore.getShortCart();
-      cartStore.getCart();
-
-      // router.push({path: '/cart'})
+      // cartStore.getShortCart();
+      // cartStore.getCart();
+      router.push({ path: "/cart" });
     } else {
       throw new Error(
         res.message || "При редактировании заказа произошла ошибка"
@@ -153,25 +184,57 @@ async function ordEdit(id) {
     }
   } catch (error) {
     appMessageStore.open("error", error.message, "error");
+  } finally {
+    isEditing.value = false
   }
 }
 
-function editOrderHandler(id) {
-  // EditOrd/?id=...
-  // console.log(id);
+async function checkPossibleEditOrder(id) {
+  // CheckPossibleEditOrd/?id=...
+  try {
+    const res = await useCustomFetch(`apissz/CheckPossibleEditOrd/?id=${id}`);
+    // console.log('checkPossibleEditOrder', res)
+    // return res.data
 
-  if (cartStore.cartItems.length) {
-    const result = confirm(
-      "В вашей корзине уже есть товары. При редактирование заказа корзина будет очищена. Редактировать заказ?"
-    );
-    if (result) {
-      ordEdit(id);
+    if (res.success) {
+      return res.data;
     } else {
-      return;
+      throw new Error(
+        res.message || "При ридактировании заказа произошла ошибка"
+      );
+    }
+  } catch (error) {
+    // console.log(error)
+    appMessageStore.open("error", error.message, "error");
+  }
+}
+
+async function editOrderHandler(id) {
+  const getCheck = await checkPossibleEditOrder(id);
+  // console.log(getCheck)
+
+  if (getCheck === "ok") {
+    if (cartStore.cartItems.length) {
+      const result = confirm(
+        "В вашей корзине уже есть товары. При редактирование заказа корзина будет очищена. Редактировать заказ?"
+      );
+      if (result) {
+        await ordEdit(id);
+      } else {
+        return;
+      }
+    } else {
+      await ordEdit(id);
     }
   } else {
-    ordEdit(id);
+    appMessageStore.openWithTimer(
+      "warning",
+      "Редактирование заказа невозможно, обратитесь к своему менеджеру",
+      "warning"
+    );
   }
+
+  // EditOrd/?id=...
 
   /*
     1. Запрос - редактирование
@@ -179,6 +242,80 @@ function editOrderHandler(id) {
     3. Редирект в корзину
     4. Получние корзины
     5. Показать полуску, что заказ редактируется
+
+    [X]Повторение заказа: CopyOrd/?id=...
+    [X]Скачивание документов: Счет - GetInvoice/?id=... , УПД - GetUpd/?id=...
+    [X]Отмена заказа: CancelOrd/?id=...
+    [X]Подтверждение заказа: ToRealize/?id=...
+
+
   */
 }
+
+async function invoiceHandler(id) {
+  try {
+    const res = await useCustomFetch(`apissz/GetInvoice/?id=${id}`);
+
+    if (res.success) {
+      // console.log(res)
+      appMessageStore.openWithTimer("success", res.message, "success");
+    } else {
+      throw new Error(res.message || "При запросе счета произошла ошибка");
+    }
+  } catch (error) {
+    appMessageStore.open("error", error.message, "error");
+  }
+}
+
+async function updHandler(id) {
+  try {
+    const res = await useCustomFetch(`apissz/GetUpd/?id=${id}`);
+
+    if (res.success) {
+      // console.log(res)
+      appMessageStore.openWithTimer("success", res.message, "success");
+    } else {
+      throw new Error(res.message || "При запросе УПД произошла ошибка");
+    }
+  } catch (error) {
+    appMessageStore.open("error", error.message, "error");
+  }
+}
+
+async function cancelOrderHandler(id) {
+  try {
+    isOrderCanceling.value = true
+    const res = await useCustomFetch(`apissz/CancelOrd/?id=${id}`)
+
+    if(res.success) {
+      // console.log(res)
+      await loadOrder(id)
+    } else {
+      throw new Error(res.message || 'При отмене заказа произошла ошибка')
+    }
+
+  } catch (error) {
+    appMessageStore.open("error", error.message, "error");
+  } finally {
+    isOrderCanceling.value = false
+  }
+}
+
+async function copyHandler(id) {
+  try {
+    const res = await useCustomFetch(`apissz/CopyOrd/?id=${id}`)
+
+    if(res.success) {
+      console.log(res)
+      router.push({path: '/cart'})
+      appMessageStore.openWithTimer("success", 'Заказ скопирован', "success");
+    } else {
+      throw new Error(res.message || 'При копировании заказа произошла ошибка')
+    }
+
+  } catch (error) {
+    appMessageStore.open("error", error.message, "error");
+  }
+}
+
 </script>

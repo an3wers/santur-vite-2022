@@ -23,6 +23,7 @@ const Feedback = () => import("@/pages/profile/feedback.vue");
 const OrderHistory = () => import("@/pages/profile/orderhistory/index.vue");
 const Order = () => import("@/pages/profile/orderhistory/order.vue");
 const Search = () => import('@/pages/search.vue')
+const News = () => import('@/pages/about/news/index.vue')
 
 const routes = [
   { path: "/", component: Home },
@@ -43,7 +44,8 @@ const routes = [
   { path: "/profile/feedback", component: Feedback },
   { path: "/profile/orderhistory", component: OrderHistory },
   { path: "/profile/orderhistory/:id", component: Order },
-  { path: '/search', component: Search}
+  { path: '/search', component: Search},
+  { path: '/about/news', component: News}
 ];
 
 const router = createRouter({

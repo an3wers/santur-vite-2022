@@ -6,13 +6,17 @@
       <p v-if="commentMoney">{{commentMoney}}</p>
       <p v-if="commentChange">{{commentChange}}</p>
     </div>
-    <app-button :disabled="!nextstepAvailable" @click="$emit('onConfirmOrder', id)" btnType="primary" btnSize="md">{{nextstepTitle}}</app-button>
+    <app-button :disabled="!nextstepAvailable" @click="$emit('onConfirmOrder', id)" btnType="primary" btnSize="md">
+      <btn-spinner v-if="orderIsConfirming" />
+      {{nextstepTitle}}
+    </app-button>
   </app-informer>
 </template>
 
 <script setup>
 import AppInformer from '@/components/AppInformer.vue'
 import AppButton from '@/components/UI/Buttons/AppButton.vue'
+import BtnSpinner from '@/components/UI/Spinner/BtnSpinner.vue'
 
 defineProps({
   id: {
@@ -41,6 +45,10 @@ defineProps({
   commentMoney: {
     type: String,
     default: ''
+  },
+  orderIsConfirming: {
+    type: Boolean,
+    default: false
   }
 })
 

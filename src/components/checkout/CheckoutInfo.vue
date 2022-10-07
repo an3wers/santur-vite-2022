@@ -1,6 +1,7 @@
 <template>
   <div class="p-6 rounded-xl bg-slate-100 sticky top-4">
-    <h2>Информация о заказе</h2>
+    <h2 v-if="!cartStore.cartId">Информация о заказе</h2>
+    <h2 v-else>Заказ №{{cartStore.cartId}}</h2>
     <!-- Выбор договора -->
     
     <div class="input-block pb-4 space-y-2">
@@ -57,7 +58,10 @@
     <div class="flex flex-col space-y-3 mt-4">
       <!-- Кнопки -->
       <app-button :disabled="!isConfirm" btnType="primary" @click="onSubmit" btnSize="lg"
-        >Оформить заказ</app-button
+        >
+        <btn-spinner v-if="btnProcessing" />
+        {{cartStore.cartId ? 'Сохранить заказ' : 'Оформить заказ'}}
+        </app-button
       >
       
     </div>
@@ -73,6 +77,8 @@ import { useAuthStore } from '@/stores/auth'
 import AppButton from '@/components/UI/Buttons/AppButton.vue'
 import { ref } from 'vue'
 import { useProfileStore } from '@/stores/profile'
+import BtnSpinner from '@/components/UI/Spinner/BtnSpinner.vue'
+
 
 const profileStore = useProfileStore()
 const cartStore = useCartStore() 
@@ -81,6 +87,10 @@ const authStore = useAuthStore()
 defineProps({
   isConfirm: {
     type: Boolean
+  },
+  btnProcessing: {
+    type: Boolean,
+    default: false
   }
 })
 

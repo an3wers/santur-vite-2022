@@ -12,7 +12,7 @@
           <div class="flex justify-between items-baseline">
             <h1>Корзина</h1>
             <app-button
-              v-if="cartStore.cartItems.length > 0"
+              v-if="cartStore.cartItems.length > 0 && !cartStore.cartId"
               btnSize="md"
               btnType="light"
               class="-mr-3"

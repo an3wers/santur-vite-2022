@@ -11,6 +11,7 @@
         />
         <div class="flex items-start flex-col">
           <button
+          @click="$emit('onInvoice')"
             class="bg-transparent border border-transparent hover:text-primary-hover focus:outline-none focus:ring-blue-500 focus:ring focus:ring-opacity-20 hover:no-underline text-primary underline rounded-md disabled:opacity-70"
             :disabled="!getchetAvailable"
           >
@@ -33,6 +34,7 @@
         />
         <div class="flex flex-col">
           <button
+          @click="$emit('onUpd')"
             :disabled="!getupdAvailable"
             class="bg-transparent border border-transparent hover:text-primary-hover focus:outline-none focus:ring-blue-500 focus:ring focus:ring-opacity-20 hover:no-underline text-primary underline rounded-md disabled:opacity-70 text-left"
           >
@@ -64,6 +66,8 @@ defineProps({
     default: false,
   },
 });
+
+defineEmits(['onInvoice', 'onUpd'])
 
 // documents handlers
 </script>

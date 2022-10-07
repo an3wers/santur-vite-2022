@@ -3,7 +3,15 @@
     <div class="container">
       <h1>
         По запросу «{{ $route.query.search }}» найдено:
-        {{ categoryStore.productCount }} товаров
+        {{ categoryStore.productCount }}
+        {{
+          useNounEnding(
+            categoryStore.productCount,
+            "товар",
+            "товара",
+            "товаров"
+          )
+        }}
       </h1>
 
       <div v-if="!categoryStore.categoryProducts.length">
@@ -17,7 +25,6 @@
             <div
               class="flex flex-col space-y-3 overflow-y-auto max-h-96 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-gray-100"
             >
-              <!-- :to="`/catalog/${cat.tk_id}`" -->
               <RouterLink
                 class="text-gray-900 no-underline hover:text-primary pr-4"
                 v-for="cat in mainStore.searchResultStore"
@@ -31,12 +38,6 @@
               </RouterLink>
             </div>
           </div>
-
-          <!-- <ul>
-            <li v-for="item in mainStore.searchResultStore" :key="item.tk_id">
-              {{ item.tk_name }}
-            </li>
-          </ul> -->
         </div>
         <div class="col-span-8 xl:col-span-9 relative">
           <page-loader v-if="!productsIsUpdated" />
@@ -63,19 +64,19 @@ import PageLoader from "@/components/loaders/PageLoader.vue";
 import { useCategoryStore } from "@/stores/category";
 import ProductListPagination from "@/components/catalog/ProductListPagination.vue";
 import { useMainStore } from "@/stores/main";
+import { useNounEnding } from "@/utils/helpers";
+import { useAppMessage } from "@/stores/appMessage";
 
 const route = useRoute();
-const router = useRouter();
+// const router = useRouter();
 const categoryStore = useCategoryStore();
 const mainStore = useMainStore();
+const appMessage = useAppMessage();
 /*
     apissz/setgoodsearch/?tn_id=…&tk_id=…&search=…&brend=…
     apissz/getGoodList/?page=…
 */
 const page = ref(route.query.page ? Number(route.query.page) : 1);
-// const pages = ref(0);
-// const productsCount = ref(0);
-// const products = ref([]);
 const productsIsUpdated = ref(true);
 const pageIsLoaded = ref(false);
 
@@ -85,7 +86,7 @@ async function setGoods() {
       `apissz/setgoodsearch/?tk_id=0&tn_id=0&search=${route.query.search}`
     );
   } catch (error) {
-    console.log(error.message);
+    appMessage.open("error", "Произошла ошибка", "error");
   }
 }
 
@@ -98,7 +99,7 @@ async function getProducts() {
       categoryStore.productCount = res.data.qty_records;
     }
   } catch (error) {
-    console.log(error.message);
+    appMessage.open("error", "Произошла ошибка", "error");
   }
 }
 
@@ -106,9 +107,8 @@ async function getProducts() {
 async function getFilters() {
   try {
     const res = await useCustomFetch("apissz/GetGoodFilters");
-    // console.log("Filters", res.data);
   } catch (error) {
-    console.log(error.message);
+    appMessage.open("error", "Произошла ошибка", "error");
   }
 }
 
@@ -120,7 +120,7 @@ async function loadSearchPage() {
 
   await setGoods();
   await getProducts();
-//   await getFilters();
+  //   await getFilters();
   pageIsLoaded.value = true;
 }
 
@@ -129,11 +129,9 @@ loadSearchPage();
 async function handleChangePage(p) {
   productsIsUpdated.value = false;
   page.value = p;
-  //   pushUrlState(getParamsUrl.value);
-  // router.push({query: {...route.query, page:page.value}})
-  // route.query.page = page.value
-  // console.log(...route.query)
+
   const queryStr = `search=${route.query.search}&page=${page.value}`;
+
   window.history.pushState(
     null,
     document.title,

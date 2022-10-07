@@ -8,7 +8,7 @@
           :key="item.alias"
         >
           <RouterLink
-            class="py-2 px-4 ml-2 mr-2 flex no-underline text-gray-900 hover:bg-[#dee8f3] rounded-md"
+            class="py-2 px-4 ml-2 mr-2 flex items-center no-underline text-gray-900 hover:bg-[#dee8f3] rounded-md"
             :to="`/profile/${item.alias}`"
           >
             {{ item.name }}

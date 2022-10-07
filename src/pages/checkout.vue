@@ -8,7 +8,8 @@
       />
       <div v-else class="grid grid-cols-12 gap-6">
         <div class="col-start-1 col-end-9 space-y-6">
-          <h1>Оформление заказа</h1>
+          <h1 v-if="!cartStore.cartId">Оформление заказа</h1>
+          <h1 v-else>Сохранение заказа</h1>
 
           <checkout-person-info
             v-model:getMethod="getMethod"
@@ -19,6 +20,7 @@
         <div class="col-start-9 col-end-13 space-y-6">
           <checkout-info
             :isConfirm="getOrderIsConfirm"
+            :btnProcessing="btnProcessing"
             @onClick="orderSubmitHandler"
           />
         </div>
@@ -45,6 +47,8 @@ const authStore = useAuthStore();
 const checkoutIsLoaded = ref(false);
 const appMessageStore = useAppMessage();
 const router = useRouter();
+
+const btnProcessing = ref(false)
 
 const getMethod = ref("self");
 const deliveryAddress = ref("");
@@ -80,6 +84,7 @@ const getOrderIsConfirm = computed(() => {
 });
 
 async function orderSubmitHandler() {
+  btnProcessing.value = true
   const res = await cartStore.cartConfirm(
     payMethod.value,
     orderComment.value,
@@ -88,13 +93,29 @@ async function orderSubmitHandler() {
   );
 
   if (res instanceof Error) {
-    appMessageStore.open(
-      "error",
-      "При оформлении заказа произошла ошибка",
-      "error"
-    );
+    if (cartStore.cartId) {
+      appMessageStore.open(
+        "error",
+        "При сохранении заказа произошла ошибка",
+        "error"
+      );
+    } else {
+      appMessageStore.open(
+        "error",
+        "При оформлении заказа произошла ошибка",
+        "error"
+      );
+    }
   } else {
-    router.push({ path: "/thank", query: { order: res } });
+    console.log(res)
+    if (cartStore.cartId) {
+      await cartStore.getCart()
+      btnProcessing.value = false
+      router.push({ path: `/profile/orderhistory/${res}` });
+    } else {
+      btnProcessing.value = false
+      router.push({ path: "/thank", query: { order: res } });
+    }
   }
 
   // console.log(

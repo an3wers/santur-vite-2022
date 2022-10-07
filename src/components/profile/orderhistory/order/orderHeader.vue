@@ -23,11 +23,15 @@
     </div>
     <div class="col-span-12 xl:col-span-3 space-y-6">
       <div class="flex justify-end space-x-3">
-        <app-button @click="editOrder(id)" :disabled="!editAvailable" btnType="secondary"
-          >Изменить</app-button
+        <app-button @click="editOrder(id)" :disabled="!editAvailable || cartStore.cartId" btnType="secondary">
+          <btn-spinner v-if="isEditing" />
+          Изменить
+          </app-button
         >
-        <app-button :disabled="!deleteAvailable" btnType="secondary"
-          >Отменить</app-button
+        <app-button @click="$emit('onCancel', id)" :disabled="!deleteAvailable" btnType="secondary">
+          <btn-spinner v-if="isOrderCanceling" />
+          Отменить
+          </app-button
         >
 
         <Menu as="div" class="relative inline-block text-left">
@@ -72,6 +76,7 @@
               </MenuItem>
               <MenuItem v-slot="{ active }">
                 <button
+                @click="$emit('onCopy', id)"
                   class="flex text-left w-full text-[0.9375rem] px-4 py-2 no-underline rounded-md"
                   :class="[
                     active ? 'bg-slate-100 text-primary' : 'text-gray-900'
@@ -98,6 +103,10 @@ import MoreHorize24 from '@/components/UI/Icons/MoreHorize_24.vue'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import InfoIcon24 from '@/components/UI/Icons/InfoIcon_24.vue'
 import Popper from 'vue3-popper'
+import { useCartStore } from '@/stores/cart'
+import BtnSpinner from '@/components/UI/Spinner/BtnSpinner.vue'
+
+const cartStore = useCartStore()
 
 defineProps({
   id: {
@@ -130,10 +139,18 @@ defineProps({
   deleteAvailable: {
     type: Boolean,
     default: false
+  },
+  isOrderCanceling: {
+    type: Boolean,
+    default: false
+  },
+  isEditing: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emits = defineEmits(['onPrintPage', 'onEditOrder'])
+const emits = defineEmits(['onPrintPage', 'onEditOrder', 'onCancel', 'onCopy'])
 
 function editOrder(id) {
   // EditOrd/?id=...

@@ -9,7 +9,8 @@
     </div>
     <!-- # Лоадер -->
 
-    <h2>Информация о заказе</h2>
+    <h2 v-if="!cartStore.cartId">Информация о заказе</h2>
+    <h2 v-else>Заказ №{{cartStore.cartId}}</h2>
 
     <!-- Выбор договора, если пользователь авторизован -->
     <div v-if="authStore.getIsAuth" class="input-block pb-4 space-y-2">
@@ -56,7 +57,7 @@
       </li>
     </ul>
 
-    <div class="flex flex-col space-y-3 mt-4">
+    <div v-if="!cartStore.cartId" class="flex flex-col space-y-3 mt-4">
       <!-- Кнопки -->
       <app-button
         @click="$router.push('/checkout')"
@@ -75,6 +76,26 @@
         >Сохранить заказ</app-button
       >
     </div>
+    <div v-else class="flex flex-col space-y-3 mt-4">
+      <!-- Кнопки -->
+      <app-button
+        @click="editOrderSaveHandler"
+        :disabled="!authStore.getIsAuth"
+        btnType="primary"
+        btnSize="lg"
+        class="w-full"
+      >
+        Сохранить заказ
+      </app-button>
+      <app-button
+        @click="editOrderCancelHandler(cartStore.cartId)"
+        :disabled="!authStore.getIsAuth"
+        btnType="outline"
+        btnSize="lg"
+        >Отменить изменения</app-button
+      >
+    </div>
+
   </div>
 </template>
 
@@ -117,4 +138,30 @@ async function saveOrderHandler() {
     router.push({ name: "thank", query: { draft: res } });
   }
 }
+
+async function editOrderSaveHandler() {
+
+  router.push({path: '/checkout'})
+
+  // Сохраняю заказ и делаю редирект в заказ
+  // const res = cartStore.cartConfirm('бн', '', '')
+
+}
+
+async function editOrderCancelHandler(id) {
+  // Чищю корзину и делаю редирект в заказ 
+  const res = await cartStore.cleanCart()
+  
+  if (res instanceof Error) {
+    appMessageStore.open(
+      "error",
+      "При отмене сохранения произошла ошибка",
+      "error"
+    );
+  } else {
+    router.push({path: `/profile/orderhistory/${id}`})
+    await cartStore.getCart()
+  }
+}
+
 </script>

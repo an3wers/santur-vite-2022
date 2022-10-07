@@ -7,7 +7,8 @@
     <the-footer />
 
     <!-- Смотреть на id корзины, сейчас сделано не правильно -->
-    <OrderEditBar v-if="orderStore.editOrder.id" :order="orderStore.editOrder" />
+    <!-- <OrderEditBar v-if="orderStore.editOrder.id" :order="orderStore.editOrder" /> -->
+    <OrderEditBar v-if="cartStore.cartId" :id="cartStore.cartId" />
     
     <Teleport to="body">
       <Transition name="fade">
@@ -55,7 +56,8 @@ async function loadState() {
   await catalogStore.loadCatalog();
   await profileStore.getFavorities();
   await profileStore.loadProfile();
-  await cartStore.getShortCart();
+  // await cartStore.getShortCart();
+  await cartStore.getCart()
   isLoaded.value = true;
 }
 

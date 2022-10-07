@@ -10,7 +10,6 @@
         @blur="inputBlurHandler"
         @focus="inputFocusHandler"
       />
-      <!-- <button class="absolute search-icon"><search-icon-24 color="#1976D2" /></button> -->
       <span
         v-if="isClearBtn"
         @click="clearSearchHandler"
@@ -51,31 +50,22 @@ import AppButtonIcon from "@/components/UI/Buttons/AppButtonIcon.vue";
 import CloseIcon24 from "@/components/UI/Icons/CloseIcon_24.vue";
 import { useCustomFetch } from "@/utils/fetch";
 import { useMainStore } from "@/stores/main";
-
-// const props = defineProps(["searchValue", 'searchInput']);
-// defineEmits(["onInput", "onClear", 'inputBlur']);
+import { useAppMessage } from '@/stores/appMessage'
 
 const router = useRouter();
 const route = useRoute();
 const mainStore = useMainStore();
+const appMessage = useAppMessage()
 
 mainStore.searchValueStore = route.query.search || "";
 
-// const searchValue = ref(route.query.search || '');
-// const searchResult = ref([]);
-// const searchInut = ref(null);
-
 const isResultSearch = ref(false);
-// const isSearching = ref(fasle)
 
 const isClearBtn = computed(() => {
   return route.query.search || mainStore.searchValueStore;
 });
 
 function clearSearchHandler() {
-  // searchValue.value = "";
-  // searchResult.value = [];
-  
   if (route.params.id) {
     router.push({ path: `/catalog/${route.params.id}`, query: null });
   }
@@ -94,7 +84,6 @@ function inputBlurHandler() {
 }
 
 function inputFocusHandler() {
-  // if (searchValue.value && searchResult.value.length) {
   if (mainStore.searchValueStore && mainStore.searchResultStore.length) {
     isResultSearch.value = true;
   }
@@ -103,7 +92,6 @@ function inputFocusHandler() {
 const timer = ref(true);
 
 function searchHandler(value) {
-  // searchValue.value = value.trim();
   mainStore.searchValueStore = value.trim();
 
   /*
@@ -116,7 +104,6 @@ function searchHandler(value) {
     Роутинг в категорию
   */
 
-  // if (searchValue.value) {
   if (mainStore.searchValueStore) {
     isResultSearch.value = true;
 
@@ -127,52 +114,35 @@ function searchHandler(value) {
 
     timer.value = setTimeout(async () => {
       try {
-        // const res = await useCustomFetch(
-        //   `apissz//quicksearch/?search=${searchValue.value}`
-        // );
         const res = await useCustomFetch(
           `apissz//quicksearch/?search=${mainStore.searchValueStore}`
         );
 
         if (res.success) {
-          // searchResult.value = res.data;
           mainStore.searchResultStore = res.data;
-          // console.log(res.data);
         } else {
           throw new Error(res.message || "При поиски произошла ошибка");
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
+        appMessage.open('error', error.message, 'error')
       }
-
       clearTimeout(timer.value);
     }, 700);
   }
 }
 
 async function searchRequestSubmit() {
-  // if (searchValue.value) {
-  //   console.log("searchRequestSubmit", searchValue.value);
-  // }
-
   if (mainStore.searchValueStore) {
     router.push({
       path: "/search",
       query: { search: mainStore.searchValueStore },
     });
     isResultSearch.value = false;
-
-    // const res = await useCustomFetch(
-    //       `apissz//quicksearch/?search=${mainStore.searchValueStore}`
-    //     );
-    // if(res.success) {
-    //   mainStore.searchResultStore = res.data;
-    // }
   }
 }
 
 function routeHandler(id) {
-  // router.push({path: `/catalog/${id}`, query:{search: searchValue.value}})
   router.push({
     path: `/catalog/${id}`,
     query: { search: mainStore.searchValueStore },
