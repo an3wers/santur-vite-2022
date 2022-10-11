@@ -1,13 +1,12 @@
 // router-link-active router-link-exact-active
 
-.profile-menu{
-    &__item {
-        > a.router-link-active, a.router-link-exact-active {
-            color: #1976D2;
-            background-color: #dee8f3;
-        }
-        > a:hover {
-            
-        } 
+.profile-menu {
+  &__item {
+    > a.active {
+      color: #1976d2;
+      background-color: #dee8f3;
     }
+    > a:hover {
+    }
+  }
 }

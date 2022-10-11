@@ -25,6 +25,7 @@ const Order = () => import("@/pages/profile/orderhistory/order.vue");
 const Search = () => import("@/pages/search.vue");
 const News = () => import("@/pages/about/news/index.vue");
 const NewsItem = () => import("@/pages/about/news/item.vue");
+const Contacts = () => import("@/pages/contact.vue");
 const NotFound = () => import("@/pages/404.vue");
 
 const routes = [
@@ -43,10 +44,10 @@ const routes = [
   { path: "/profile/delivery", component: Delivery },
   { path: "/profile/favorites", component: Favorites },
   { path: "/profile/feedback", component: Feedback },
-  { path: "/profile/feedback", component: Feedback },
   { path: "/profile/orderhistory", component: OrderHistory },
   { path: "/profile/orderhistory/:id", component: Order },
   { path: "/search", component: Search },
+  { path: "/contact", component: Contacts },
   { path: "/about/news", component: News },
   { path: "/about/news/:id", component: NewsItem },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
@@ -55,6 +56,8 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  linkActiveClass: "active",
+  linkExactActiveClass: "active",
   scrollBehavior(to, from, savedPosition) {
     // always scroll to top
     return { top: 0 };
