@@ -130,3 +130,32 @@ export const useDate = (date = new Date()) => {
 
   return dd + "." + mm + "." + yy;
 };
+
+export const useDateFormatter = (
+  date,
+  options = { day: "numeric", month: "long", year: "numeric" }
+) => {
+  // debugger;
+  const myDate = date.split(".");
+
+  // console.log(myDate);
+
+  /*
+
+    input date format: string '10.10.2022'
+
+    example options
+    const options = {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }
+
+  */
+
+  const result = new Intl.DateTimeFormat("ru", options);
+
+  return result.format(new Date(+myDate[2], +myDate[1] - 1, +myDate[0]));
+
+  // return date;
+};

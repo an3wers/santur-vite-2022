@@ -24,6 +24,7 @@ const OrderHistory = () => import("@/pages/profile/orderhistory/index.vue");
 const Order = () => import("@/pages/profile/orderhistory/order.vue");
 const Search = () => import("@/pages/search.vue");
 const News = () => import("@/pages/about/news/index.vue");
+const NewsItem = () => import("@/pages/about/news/item.vue");
 const NotFound = () => import("@/pages/404.vue");
 
 const routes = [
@@ -47,6 +48,7 @@ const routes = [
   { path: "/profile/orderhistory/:id", component: Order },
   { path: "/search", component: Search },
   { path: "/about/news", component: News },
+  { path: "/about/news/:id", component: NewsItem },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
 ];
 
