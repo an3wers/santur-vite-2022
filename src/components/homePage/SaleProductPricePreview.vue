@@ -35,7 +35,7 @@
         <Popper v-else arrow hover content="Удалить из&nbsp;избранного">
           <button
             @click="$emit('onRemoveFavority', product.code)"
-            class="py-1 text-sm px-2 bg-transparent border border-transparent hover:bg-blue-100 focus:outline-none focus:ring-slate-500 focus:ring focus:ring-opacity-20 inline-flex items-center text-center justify-center rounded-md disabled:opacity-75"
+            class="py-1 text-sm px-1 bg-transparent border border-transparent hover:bg-blue-100 focus:outline-none focus:ring-slate-500 focus:ring focus:ring-opacity-20 inline-flex items-center text-center justify-center rounded-md disabled:opacity-75"
           >
             <bookmark-icon-fill-20 color="#1976D2" />
           </button>

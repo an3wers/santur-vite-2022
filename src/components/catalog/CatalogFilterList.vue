@@ -25,7 +25,6 @@
             :placeholder="`от ${getFilterPrice.MinLimit}`"
             @blur="onChangeMinLimitPrice($event.target.value)"
             @keypress.enter="$event.target.blur()"
-            ref="minPriceValInput"
             type="number"
             class="w-full rounded-md border form-input bg-white border-transparent focus:border-primary focus:ring focus:ring-blue-200 focus:ring-opacity-50 py-1.5 text-sm px-2.5"
           />
@@ -56,7 +55,7 @@
         </div>
       </div>
     </div>
-
+    <!-- # Фильтр по цене -->
     <!-- Фильтры чекбоксы -->
     <catalog-filter-item
       @setFilter="handleFilter"
@@ -129,19 +128,15 @@ const getFilterPrice = computed(() => {
 const maxPriceVal = ref(getFilterPrice.value.MaxSelect);
 const minPriceVal = ref(getFilterPrice.value.MinSelect);
 
-const minPriceValInput = ref(null)
-
 const getIsCleanValidate = computed(() => {
   return (
     categoryStore.setedFilters.length || categoryStore.setedFiltersPrice.length
   );
 });
 
-// const timer = ref(true)
-
 function onChangeMinLimitPrice(value) {
   // array minprice ["maxprice:500", "minprice:500"]
-  
+
   let settedMinValue = 0;
   categoryStore.setedFiltersPrice.forEach((el) => {
     el.split(":").forEach((p, i, arr) => {
@@ -154,20 +149,6 @@ function onChangeMinLimitPrice(value) {
   if (minPriceVal.value && minPriceVal.value !== settedMinValue) {
     emit("changeMinLimitPrice", value, getFilterPrice.value.Name);
   }
-
-
-
-
-  // if()
-
-  // if (timer.value) {
-  //   clearTimeout(timer.value)
-  //   timer.value = null
-  // }
-
-  // timer.value = setTimeout(() => {
-  //   emit('changeMinLimitPrice', value, getFilterPrice.value.Name)
-  // }, 1000)
 }
 
 function onChangeMaxLimitPrice(value) {
@@ -183,14 +164,6 @@ function onChangeMaxLimitPrice(value) {
   if (maxPriceVal.value && maxPriceVal.value !== settedMaxValue) {
     emit("changeMaxLimitPrice", value, getFilterPrice.value.Name);
   }
-
-  // if (timer.value) {
-  //   clearTimeout(timer.value)
-  //   timer.value = null
-  // }
-  // timer.value = setTimeout(() => {
-  //   emit('changeMaxLimitPrice', value, getFilterPrice.value.Name)
-  // }, 1000)
 }
 
 // TODO: разобраться почему отрабатывает два раза

@@ -35,17 +35,17 @@
           >
         </div>
         <!-- Избранные -->
-        <app-button
+        <app-button-icon
           v-if="!product.isfavority"
           @click="addFavorityHandler(product.code)"
           btnType="light"
         >
           <bookmark-icon-20 color="#6b7280" />
-        </app-button>
+        </app-button-icon>
         <button
           v-else
           @click="removeFavorityHandler(product.code)"
-          class="py-2 text-base px-3 leading-5 inline-flex items-center text-center justify-center rounded-md disabled:opacity-75 bg-transparent border border-transparent hover:bg-slate-100 focus:outline-none focus:ring-slate-500 focus:ring focus:ring-opacity-20"
+          class="py-2 text-base px-2 leading-5 inline-flex items-center text-center justify-center rounded-md disabled:opacity-75 bg-transparent border border-transparent hover:bg-slate-100 focus:outline-none focus:ring-slate-500 focus:ring focus:ring-opacity-20"
         >
           <bookmark-icon-fill-20 color="#1976D2" />
         </button>
@@ -155,7 +155,6 @@ import AppButtonIcon from "@/components/UI/Buttons/AppButtonIcon.vue";
 import PlusIcon20 from "@/components/UI/Icons/PlusIcon_20.vue";
 import RemoveIcon20 from "@/components/UI/Icons/RemoveIcon_20.vue";
 import BookmarkIconFill20 from "@/components/UI/Icons/BookmarkIconFill_20.vue";
-
 import { useToFixedNumber, setCountProduct } from "@/utils/helpers";
 // import { useCustomFetch } from "@/utils/fetch";
 

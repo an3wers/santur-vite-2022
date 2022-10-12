@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <app-breadcrumbs />
+    <app-breadcrumbs :breadcrumbs="breadcrumbs" />
 
     <h1>Контакты и реквизиты</h1>
 
@@ -41,6 +41,7 @@
                   сб, вс — выходной</span
                 >
               </div>
+              <!-- TODO: Модальное окно с реквизитами -->
               <div class="px-4 py-4 text-right">
                 <button>Реквизиты</button>
               </div>
@@ -68,10 +69,7 @@
           <div>
             <div class="p-4 bg-slate-150">
               <h3 class="mb-0">Сантехкомплект-Тагил</h3>
-              <div>
-                Сеть оптово-розничных магазинов сантехники в Екатеринбурге,
-                Верхней Пышме и Нижнем Тагиле
-              </div>
+              <div>Офис оптовых продаж в Нижнем Тагиле</div>
             </div>
 
             <div class="divide-y divide-gray-300">

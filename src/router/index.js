@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useCatalogStore } from "@/stores/catalog";
 import { useAuthStore } from "@/stores/auth";
 import { useMainStore } from "@/stores/main";
+import { useAppMessage } from "../stores/appMessage";
 
 // import Category from '@/pages/catalog/category.vue'
 
@@ -69,6 +70,7 @@ router.beforeEach((to, from, next) => {
   const catalogStore = useCatalogStore();
   const authStore = useAuthStore();
   const mainStore = useMainStore();
+  const appMessageStroe = useAppMessage();
 
   if (catalogStore.$state.isMenu) {
     catalogStore.handleMenu();
@@ -85,6 +87,10 @@ router.beforeEach((to, from, next) => {
   if (mainStore.searchValueStore && !to.query.search) {
     mainStore.searchValueStore = "";
     // mainStore.searchResultStore = []
+  }
+
+  if (appMessageStroe.isShow && appMessageStroe.type === "error") {
+    appMessageStroe.close();
   }
 
   next();

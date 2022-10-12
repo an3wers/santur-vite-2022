@@ -28,7 +28,6 @@
           />
         </div>
         <div class="col-span-8 xl:col-span-9 relative">
-        
           <page-loader v-if="!categoryIsUpdated" />
 
           <div>
@@ -79,6 +78,7 @@ import AppBreadcrumbs from "@/components/AppBreadcrumbs.vue";
 import CatalogProductChips from "@/components/catalog/CatalogProductChips.vue";
 import CatalogSort from "@/components/catalog/CatalogSort.vue";
 import PageLoader from "@/components/loaders/PageLoader.vue";
+import { useAppMessage } from "@/stores/appMessage";
 
 const categoryIsLoaded = ref(false);
 const categoryIsUpdated = ref(true);
@@ -89,6 +89,7 @@ const router = useRouter();
 const catalogStore = useCatalogStore();
 const categoryStore = useCategoryStore();
 const mainStore = useMainStore();
+const appMessageStore = useAppMessage();
 
 const page = ref(route.query.page ? Number(route.query.page) : 1);
 
@@ -117,22 +118,23 @@ const getCatalogTitle = computed(() => {
 });
 
 const getParams = computed(() => {
-
-  if(currentCat.value) {
-      //   console.log(currentCat.value);
-  if (currentCat.value.parent_id === 0) {
-    // return `?tn_id=${currentCat.value.id}&tk_id=0`
-    // return `?tn_id=${currentCat.value.id}`;
-    return route.query.search ? `?tn_id=${currentCat.value.id}&search=${route.query.search}`: `?tn_id=${currentCat.value.id}&search=`;
+  if (currentCat.value) {
+    //   console.log(currentCat.value);
+    if (currentCat.value.parent_id === 0) {
+      // return `?tn_id=${currentCat.value.id}&tk_id=0`
+      // return `?tn_id=${currentCat.value.id}`;
+      return route.query.search
+        ? `?tn_id=${currentCat.value.id}&search=${route.query.search}`
+        : `?tn_id=${currentCat.value.id}&search=`;
+    } else {
+      // return `?tn_id=${currentCat.value.parent_id}&tk_id=${currentCat.value.id}`
+      return route.query.search
+        ? `?tk_id=${currentCat.value.id}&search=${route.query.search}`
+        : `?tk_id=${currentCat.value.id}&search=`;
+    }
   } else {
-    // return `?tn_id=${currentCat.value.parent_id}&tk_id=${currentCat.value.id}`
-    return route.query.search ? `?tk_id=${currentCat.value.id}&search=${route.query.search}`: `?tk_id=${currentCat.value.id}&search=`;
+    return undefined;
   }
-  } else {
-    return undefined
-  }
-
-
 });
 
 const getParamsUrl = computed(() => {
@@ -151,11 +153,11 @@ const getParamsUrl = computed(() => {
   }
 
   if (categoryStore.inCash) {
-    queryObj.incash = 'true'
+    queryObj.incash = "true";
   }
 
   if (route.query.search) {
-    queryObj.search = route.query.search
+    queryObj.search = route.query.search;
   }
 
   // return { filter: categoryStore.setedFilters, page: page.value, price: categoryStore.setedFiltersPrice }
@@ -186,23 +188,25 @@ async function loadCategory() {
 
   // console.log('route.query', route.query)
 
-
   const tmpPrices = Object.entries(route.query).find((el) => el[0] === "price");
-  const tmpIncash = Object.entries(route.query).find((el) => el[0] === "incash");
+  const tmpIncash = Object.entries(route.query).find(
+    (el) => el[0] === "incash"
+  );
 
-  if(getParams.value) {
+  if (getParams.value) {
     await categoryStore.setCategory(getParams.value);
   } else {
-    router.replace({name: 'NotFound'})
+    router.replace({ name: "NotFound" });
   }
-
 
   //   console.log(route.query)
   //   console.log(Object.keys(route.query))
 
   if (
-    Object.keys(route.query).filter((el) => el !== "page" && el !== "price" && el !== "incash" && el !== "search")
-      .length
+    Object.keys(route.query).filter(
+      (el) =>
+        el !== "page" && el !== "price" && el !== "incash" && el !== "search"
+    ).length
   ) {
     // Если в фильтрах что-то есть
     await categoryStore.setFilters(route);
@@ -211,9 +215,8 @@ async function loadCategory() {
   }
 
   if (tmpPrices) {
-
-    let minVal = 0
-    let maxVal = 0
+    let minVal = 0;
+    let maxVal = 0;
 
     tmpPrices[1].split("_").forEach((el) => {
       if (el.split(":")[0] === "minprice") {
@@ -226,19 +229,18 @@ async function loadCategory() {
       }
     });
 
-    if(minVal) {
-        await categoryStore.setMinLimit(`?flt=Цена&val=${minVal}`);
+    if (minVal) {
+      await categoryStore.setMinLimit(`?flt=Цена&val=${minVal}`);
     }
-    if(maxVal) {
-        await categoryStore.setMaxLimit(`?flt=Цена&val=${maxVal}`);
+    if (maxVal) {
+      await categoryStore.setMaxLimit(`?flt=Цена&val=${maxVal}`);
     }
-
   }
 
-  if(tmpIncash || categoryStore.inCash) {
-    await categoryStore.setInCash('Y');
+  if (tmpIncash || categoryStore.inCash) {
+    await categoryStore.setInCash("Y");
   } else {
-    await categoryStore.setInCash('N');
+    await categoryStore.setInCash("N");
   }
 
   await categoryStore.loadProducts(page.value);
@@ -261,10 +263,10 @@ function pushUrlState(payload) {
     if (el[0] === "price") {
       result.push(`${el[0]}=${el[1].join("_")}`);
     }
-    if(el[0] === "incash") {
-        result.push(`${el[0]}=${el[1]}`);
+    if (el[0] === "incash") {
+      result.push(`${el[0]}=${el[1]}`);
     }
-    if(el[0] === 'search') {
+    if (el[0] === "search") {
       result.push(`${el[0]}=${el[1]}`);
     }
   });
@@ -325,12 +327,12 @@ async function handleChangePage(p) {
   categoryIsUpdated.value = false;
   page.value = p;
   pushUrlState(getParamsUrl.value);
-  
+
   window.scrollTo({
     top: 0,
     behavior: "smooth",
   });
-  
+
   await categoryStore.loadProducts(page.value);
   categoryIsUpdated.value = true;
 }
@@ -341,11 +343,15 @@ async function handleChangeMaxLimitPrice(value, name) {
   categoryIsUpdated.value = false;
   page.value = 1;
 
-  await categoryStore.setMaxLimit(`?flt=${name}&val=${value}`);
+  const res = await categoryStore.setMaxLimit(`?flt=${name}&val=${value}`);
   //   await categoryStore.setMaxLimit(`?flt=${name}&item=${value}`);
-  await categoryStore.loadProducts(page.value);
 
-  pushUrlState(getParamsUrl.value);
+  if (res instanceof Error) {
+    appMessageStore.open("error", res.message, "error");
+  } else {
+    await categoryStore.loadProducts(page.value);
+    pushUrlState(getParamsUrl.value);
+  }
   categoryIsUpdated.value = true;
 }
 
@@ -353,11 +359,15 @@ async function handleChangeMinLimitPrice(value, name) {
   categoryIsUpdated.value = false;
   page.value = 1;
 
-  await categoryStore.setMinLimit(`?flt=${name}&val=${value}`);
+  const res = await categoryStore.setMinLimit(`?flt=${name}&val=${value}`);
   //   await categoryStore.setMinLimit(`?flt=${name}&item=${value}`);
-  await categoryStore.loadProducts(page.value);
 
-  pushUrlState(getParamsUrl.value);
+  if (res instanceof Error) {
+    appMessageStore.open("error", res.message, "error");
+  } else {
+    await categoryStore.loadProducts(page.value);
+    pushUrlState(getParamsUrl.value);
+  }
   categoryIsUpdated.value = true;
 }
 
@@ -392,7 +402,7 @@ async function handleChangeInCash(value) {
 
   await categoryStore.setInCash(tmp);
   await categoryStore.loadProducts(page.value);
-  
+
   pushUrlState(getParamsUrl.value);
   categoryIsUpdated.value = true;
 }

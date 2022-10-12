@@ -11,7 +11,7 @@
         </div>
       </div>
     </div>
-    <div class="section py-20">
+    <div class="section pt-20">
       <div class="container">
         <sale-products />
         <bottom-banner />
@@ -31,12 +31,12 @@ import SaleProducts from "@/components/homePage/SaleProducts.vue";
 import BottomBanner from "@/components/homePage/BottomBanner.vue";
 import News from "@/components/homePage/News.vue";
 import Features from "@/components/homePage/Features.vue";
-import PageLoader from '@/components/loaders/PageLoader.vue'
+import PageLoader from "@/components/loaders/PageLoader.vue";
 
 import { useHomeStore } from "@/stores/home";
-import { ref } from 'vue'
+import { ref } from "vue";
 
-const homeIsLoaded = ref(false)
+const homeIsLoaded = ref(false);
 const homeStore = useHomeStore();
 
 async function loadHomePage() {
@@ -45,9 +45,8 @@ async function loadHomePage() {
   // await homeStore.loadNews();
   await homeStore.loadPopularCategory();
   await homeStore.loadSales();
-  homeIsLoaded.value = true
+  homeIsLoaded.value = true;
 }
 
 loadHomePage();
-
 </script>

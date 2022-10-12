@@ -31,9 +31,12 @@
             >/{{ product.ed }}.</span
           >
         </div>
-        <app-button @click="onRemoveFavority(product.code)" btnType="light">
+        <app-button-icon
+          @click="onRemoveFavority(product.code)"
+          btnType="light"
+        >
           <bookmark-icon-fill-20 color="#1976D2" />
-        </app-button>
+        </app-button-icon>
       </div>
       <div
         class="inline-flex space-x-1"
@@ -130,112 +133,112 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import AppButton from '@/components/UI/Buttons/AppButton.vue'
-import CheckIcon20 from '@/components/UI/Icons/CheckIcon_20.vue'
-import CheckCircle20 from '@/components/UI/Icons/CheckCircle_20.vue'
-import ScheduleIcon20 from '@/components/UI/Icons/ScheduleIcon_20.vue'
-import ShippingIcon20 from '@/components/UI/Icons/ShippingIcon_20.vue'
-import AppButtonIcon from '@/components/UI/Buttons/AppButtonIcon.vue'
-import BookmarkIconFill20 from '@/components/UI/Icons/BookmarkIconFill_20.vue'
-import PlusIcon20 from '@/components/UI/Icons/PlusIcon_20.vue'
-import RemoveIcon20 from '@/components/UI/Icons/RemoveIcon_20.vue'
-import { useToFixedNumber, setCountProduct } from '@/utils/helpers'
-import { useProfileStore } from '@/stores/profile'
-import { useCartStore } from '@/stores/cart'
+import { ref, computed } from "vue";
+import AppButton from "@/components/UI/Buttons/AppButton.vue";
+import CheckIcon20 from "@/components/UI/Icons/CheckIcon_20.vue";
+import CheckCircle20 from "@/components/UI/Icons/CheckCircle_20.vue";
+import ScheduleIcon20 from "@/components/UI/Icons/ScheduleIcon_20.vue";
+import ShippingIcon20 from "@/components/UI/Icons/ShippingIcon_20.vue";
+import AppButtonIcon from "@/components/UI/Buttons/AppButtonIcon.vue";
+import BookmarkIconFill20 from "@/components/UI/Icons/BookmarkIconFill_20.vue";
+import PlusIcon20 from "@/components/UI/Icons/PlusIcon_20.vue";
+import RemoveIcon20 from "@/components/UI/Icons/RemoveIcon_20.vue";
+import { useToFixedNumber, setCountProduct } from "@/utils/helpers";
+import { useProfileStore } from "@/stores/profile";
+import { useCartStore } from "@/stores/cart";
 
-const profileStore = useProfileStore()
-const cartStore = useCartStore()
+const profileStore = useProfileStore();
+const cartStore = useCartStore();
 
 const props = defineProps({
   product: {
-    type: Object
-  }
-})
+    type: Object,
+  },
+});
 
-const emit = defineEmits(['onClickRemoveFavority'])
-const productAmountInCart = ref(props.product.qty_incart)
-const isInCart = ref(!!props.product.qty_incart)
-const MAXPRODUCT_COUNT = 10000
-const isBtnSpinner = ref(false)
+const emit = defineEmits(["onClickRemoveFavority"]);
+const productAmountInCart = ref(props.product.qty_incart);
+const isInCart = ref(!!props.product.qty_incart);
+const MAXPRODUCT_COUNT = 10000;
+const isBtnSpinner = ref(false);
 
 const isRemoveBtn = computed(() => {
-  return productAmountInCart.value > 0
-})
+  return productAmountInCart.value > 0;
+});
 
 const isAddBtn = computed(() => {
-  return productAmountInCart.value < MAXPRODUCT_COUNT
-})
+  return productAmountInCart.value < MAXPRODUCT_COUNT;
+});
 
 async function addCartHandler() {
-  isBtnSpinner.value = true
+  isBtnSpinner.value = true;
 
   const prodTmp = profileStore.favorities.find(
-    el => el.code === props.product.code
-  )
+    (el) => el.code === props.product.code
+  );
 
   const res = await cartStore.addToCart(
     props.product.code,
     props.product.salekrat
-  )
+  );
   if (res instanceof Error || res == undefined) {
-    console.log('Error', res)
+    console.log("Error", res);
     // Сделать Message
   } else {
-    await cartStore.getShortCart()
-    isBtnSpinner.value = false
-    productAmountInCart.value += props.product.salekrat
-    isInCart.value = true
-    prodTmp.qty_incart = productAmountInCart.value
+    await cartStore.getShortCart();
+    isBtnSpinner.value = false;
+    productAmountInCart.value += props.product.salekrat;
+    isInCart.value = true;
+    prodTmp.qty_incart = productAmountInCart.value;
   }
 }
 
-const timer = ref(true)
+const timer = ref(true);
 
 async function changeValueHandler(param, product) {
-  if (param === 'add') {
+  if (param === "add") {
     productAmountInCart.value =
-      useToFixedNumber(productAmountInCart.value) + props.product.salekrat
-    productAmountInCart.value = useToFixedNumber(productAmountInCart.value)
-  } else if (param === 'remove') {
+      useToFixedNumber(productAmountInCart.value) + props.product.salekrat;
+    productAmountInCart.value = useToFixedNumber(productAmountInCart.value);
+  } else if (param === "remove") {
     productAmountInCart.value =
-      useToFixedNumber(productAmountInCart.value) - props.product.salekrat
-    productAmountInCart.value = useToFixedNumber(productAmountInCart.value)
+      useToFixedNumber(productAmountInCart.value) - props.product.salekrat;
+    productAmountInCart.value = useToFixedNumber(productAmountInCart.value);
   }
 
   if (timer.value) {
-    clearTimeout(timer.value)
-    timer.value = null
+    clearTimeout(timer.value);
+    timer.value = null;
   }
 
   timer.value = setTimeout(async () => {
     const prodTmp = profileStore.favorities.find(
-      el => el.code === props.product.code
-    )
+      (el) => el.code === props.product.code
+    );
 
     if (productAmountInCart.value > 0) {
       const res = await cartStore.changeCount(
         product,
         productAmountInCart.value
-      )
+      );
 
       if (res instanceof Error) {
-        console.log('Error', res)
+        console.log("Error", res);
       } else {
-        await cartStore.getShortCart()
-        prodTmp.qty_incart = productAmountInCart.value
+        await cartStore.getShortCart();
+        prodTmp.qty_incart = productAmountInCart.value;
       }
     } else if (productAmountInCart.value == 0) {
-      const res = await cartStore.removeFromCart(product)
+      const res = await cartStore.removeFromCart(product);
       if (res instanceof Error) {
-        console.log('Error', res)
+        console.log("Error", res);
       } else {
-        await cartStore.getShortCart()
-        isInCart.value = false
-        prodTmp.qty_incart = productAmountInCart.value
+        await cartStore.getShortCart();
+        isInCart.value = false;
+        prodTmp.qty_incart = productAmountInCart.value;
       }
     }
-  }, 800)
+  }, 800);
 }
 
 async function setNewValue() {
@@ -243,39 +246,38 @@ async function setNewValue() {
     productAmountInCart.value,
     MAXPRODUCT_COUNT,
     props.product.salekrat
-  )
+  );
 
   if (props.product.qty_incart != productAmountInCart.value) {
     const prodTmp = profileStore.favorities.find(
-      el => el.code === props.product.code
-    )
+      (el) => el.code === props.product.code
+    );
 
     if (productAmountInCart.value > 0) {
       const res = await cartStore.changeCount(
         props.product.code,
         productAmountInCart.value
-      )
+      );
       if (res instanceof Error) {
-        console.log('Error', res)
+        console.log("Error", res);
       } else {
-        await cartStore.getShortCart()
-        prodTmp.qty_incart = productAmountInCart.value
+        await cartStore.getShortCart();
+        prodTmp.qty_incart = productAmountInCart.value;
       }
     } else if (productAmountInCart.value == 0) {
-      const res = await cartStore.removeFromCart(props.product.code)
+      const res = await cartStore.removeFromCart(props.product.code);
       if (res instanceof Error) {
-        console.log('Error', res)
+        console.log("Error", res);
       } else {
-        await cartStore.getShortCart()
-        isInCart.value = false
-        prodTmp.qty_incart = productAmountInCart.value
+        await cartStore.getShortCart();
+        isInCart.value = false;
+        prodTmp.qty_incart = productAmountInCart.value;
       }
     }
   }
 }
 
 function onRemoveFavority(product) {
-  emit('onClickRemoveFavority', product)
+  emit("onClickRemoveFavority", product);
 }
-
 </script>

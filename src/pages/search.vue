@@ -1,6 +1,8 @@
 <template>
   <div v-if="pageIsLoaded" class="search-page">
     <div class="container">
+      <AppBreadcrumbs :breadcrumbs="breadcrumbs" />
+
       <h1>
         По запросу «{{ $route.query.search }}» найдено:
         {{ categoryStore.productCount }}
@@ -66,6 +68,7 @@ import ProductListPagination from "@/components/catalog/ProductListPagination.vu
 import { useMainStore } from "@/stores/main";
 import { useNounEnding } from "@/utils/helpers";
 import { useAppMessage } from "@/stores/appMessage";
+import AppBreadcrumbs from "@/components/AppBreadcrumbs.vue";
 
 const route = useRoute();
 // const router = useRouter();
@@ -79,6 +82,10 @@ const appMessage = useAppMessage();
 const page = ref(route.query.page ? Number(route.query.page) : 1);
 const productsIsUpdated = ref(true);
 const pageIsLoaded = ref(false);
+
+const breadcrumbs = [
+  { name: "Поиск", url: `/search?search=${route.query.search}` },
+];
 
 async function setGoods() {
   try {

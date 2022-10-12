@@ -58,7 +58,9 @@ export const useCategoryStore = defineStore("category", {
           this.inCash = response.data.incash;
         } else {
           // TODO Check error.message
-          throw new Error(response.message || 'При загрузке товаров произошла ошибка');
+          throw new Error(
+            response.message || "При загрузке товаров произошла ошибка"
+          );
         }
       } catch (error) {
         // Вывожу экран с ошибкой
@@ -187,9 +189,13 @@ export const useCategoryStore = defineStore("category", {
             response.data.filters
           );
           this.updateSetedFilterPrice(response.data.filters);
+        } else {
+          throw new Error(
+            response.message || "При установки фильтра по цене произошла ошибка"
+          );
         }
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
 
@@ -202,9 +208,14 @@ export const useCategoryStore = defineStore("category", {
             response.data.filters
           );
           this.updateSetedFilterPrice(response.data.filters);
+          return response;
+        } else {
+          throw new Error(
+            response.message || "При установки фильтра по цене произошла ошибка"
+          );
         }
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
 

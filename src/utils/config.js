@@ -1,7 +1,7 @@
 export const useConfig = () => {
   return {
     API_BASE_URL: "https://isantur.ru/",
-    PHONE_SITE: "+7 (343) 270-04-04",
+    PHONE_SITE: "73432700404",
     EMAIL_SITE: "santur@santur.ru",
     WHATSAPP_SITE: "79321217497",
   };
