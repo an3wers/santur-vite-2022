@@ -7,16 +7,16 @@
           <div class="text-sm text-gray-500 font-semibold mb-1">
             Имя и контакты
           </div>
-          <div>{{profile.name}}</div>
+          <div>{{ profile.name }}</div>
           <div class="flex space-x-2">
-            <span>{{profile.phone}}</span>
-            <span>{{profile.email}}</span>
+            <span>{{ profile.phone }}</span>
+            <span>{{ profile.email }}</span>
           </div>
         </div>
         <div class="py-3 first:pt-0 last:pb-0">
           <div class="text-sm text-gray-500 font-semibold mb-1">Компания</div>
           <div>
-            {{profile.subjInfo.name}}
+            {{ profile.subjInfo.name }}
           </div>
         </div>
       </div>
@@ -29,7 +29,7 @@
           :class="[
             methods === 'self'
               ? 'border-1 border-primary ring-blue-500 ring ring-opacity-20'
-              : 'border-gray-300'
+              : 'border-gray-300',
           ]"
         >
           <div class="input-group flex cursor-pointer space-x-2 grow">
@@ -45,10 +45,12 @@
             <label class="cursor-pointer" for="getMethodSelf">
               <span class="font-bold text-lg block mb-2">Самовывоз</span>
               <span v-if="profile.city === 'Екатеринбург'" class="block"
-                >Сантехкомплект-Урал, Свердловская обл., Екатеринбург, ул. Учителей, 34</span
+                >Сантехкомплект-Урал, Свердловская обл., Екатеринбург, ул.
+                Учителей, 34</span
               >
               <span v-else class="block"
-                >Сантехкомплект-Тагил, Свердловская обл., г. Нижний Тагил, ул. Индустриальная, 20</span
+                >Сантехкомплект-Тагил, Свердловская обл., г. Нижний Тагил, ул.
+                Индустриальная, 20</span
               >
             </label>
           </div>
@@ -67,7 +69,7 @@
           :class="[
             methods === 'delivery'
               ? 'border-1 border-primary ring-blue-500 ring ring-opacity-20'
-              : 'border-gray-300'
+              : 'border-gray-300',
           ]"
         >
           <div class="input-group cursor-pointer flex space-x-2 grow">
@@ -106,6 +108,7 @@
             :value="deliveryAddress"
             @input="$emit('update:deliveryAddress', $event.target.value)"
             inputSize="lg"
+            inputType="border"
             placeholder="Введите адрес доставки"
           />
         </div>
@@ -123,6 +126,7 @@
           @input="$emit('update:comment', $event.target.value)"
           rows="4"
           inputSize="lg"
+          inputType="border"
           placeholder="Ваш комментарий"
         />
       </div>
@@ -131,51 +135,51 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import AppButton from '@/components/UI/Buttons/AppButton.vue'
-import AppInput from '@/components/UI/Forms/AppInput.vue'
-import AppTextarea from '@/components/UI/Forms/AppTextarea.vue'
-import { useProfileStore } from '@/stores/profile'
+import { ref, computed } from "vue";
+import AppButton from "@/components/UI/Buttons/AppButton.vue";
+import AppInput from "@/components/UI/Forms/AppInput.vue";
+import AppTextarea from "@/components/UI/Forms/AppTextarea.vue";
+import { useProfileStore } from "@/stores/profile";
 
-const { profile } = useProfileStore()
+const { profile } = useProfileStore();
 
 const props = defineProps({
   getMethod: {
-    type: String
+    type: String,
   },
   deliveryAddress: {
-    type: String
+    type: String,
   },
   comment: {
-    type: String
-  }
-})
+    type: String,
+  },
+});
 
 const emit = defineEmits([
-  'update:getMethod',
-  'update:deliveryAddress',
-  'update:comment'
-])
+  "update:getMethod",
+  "update:deliveryAddress",
+  "update:comment",
+]);
 
 const methods = computed({
   get() {
-    return props.getMethod
+    return props.getMethod;
   },
   set(value) {
-    emit('update:getMethod', value)
-  }
-})
+    emit("update:getMethod", value);
+  },
+});
 
 // refs
-const radioSelf = ref(null)
-const radioDelivery = ref(null)
+const radioSelf = ref(null);
+const radioDelivery = ref(null);
 
 function getMethodHandler(method) {
-  if (method === 'self') {
-    radioSelf.value.focus()
-  } else if (method === 'delivery') {
-    radioDelivery.value.focus()
+  if (method === "self") {
+    radioSelf.value.focus();
+  } else if (method === "delivery") {
+    radioDelivery.value.focus();
   }
-  emit('update:getMethod', method)
+  emit("update:getMethod", method);
 }
 </script>

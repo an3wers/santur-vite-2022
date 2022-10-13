@@ -10,7 +10,9 @@
           <app-input
             v-model.trim="name"
             type="text"
-            :inputType="errorName && metaName.touched ? 'solid-error' : 'solid'"
+            :inputType="
+              errorName && metaName.touched ? 'border-error' : 'border'
+            "
             inputSize="md"
             @blur="blurName"
           />
@@ -27,7 +29,7 @@
             v-model.trim="email"
             type="email"
             :inputType="
-              errorEmail && metaEmail.touched ? 'solid-error' : 'solid'
+              errorEmail && metaEmail.touched ? 'border-error' : 'border'
             "
             inputSize="md"
             @blur="blurEmail"
@@ -44,7 +46,7 @@
           <app-input
             v-model.trim="comapyName"
             type="text"
-            inputType="solid"
+            inputType="border"
             inputSize="md"
           />
         </div>
@@ -55,8 +57,8 @@
             type="number"
             :inputType="
               errorCompanyInn && metaCompanyInn.touched
-                ? 'solid-error'
-                : 'solid'
+                ? 'border-error'
+                : 'border'
             "
             inputSize="md"
             @blur="blurCompanyInn"
@@ -74,7 +76,7 @@
         <app-textarea
           v-model.trim="comment"
           :inputType="
-            errorComment && metaComment.touched ? 'solid-error' : 'solid'
+            errorComment && metaComment.touched ? 'border-error' : 'border'
           "
           @blur="blurComment"
         />

@@ -4,7 +4,9 @@
       <div class="input-block space-y-2">
         <label>Email</label>
         <app-input
-          :inputType="errorEmail && metaEmail.touched ? 'solid-error' : 'solid'"
+          :inputType="
+            errorEmail && metaEmail.touched ? 'border-error' : 'border'
+          "
           inputSize="lg"
           v-model.trim="emailU"
           type="email"
@@ -20,7 +22,7 @@
       <div class="input-block space-y-2">
         <label>Пароль</label>
         <app-input
-          :inputType="errorPsw && metaPsw.touched ? 'solid-error' : 'solid'"
+          :inputType="errorPsw && metaPsw.touched ? 'border-error' : 'border'"
           inputSize="lg"
           v-model.trim="pswU"
           type="password"
@@ -78,68 +80,66 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import AppInput from '@/components/UI/Forms/AppInput.vue'
-import AppButton from '@/components/UI/Buttons/AppButton.vue'
+import { ref, computed } from "vue";
+import AppInput from "@/components/UI/Forms/AppInput.vue";
+import AppButton from "@/components/UI/Buttons/AppButton.vue";
 
-import { useAuthStore } from '@/stores/auth'
-import { useAppMessage } from '@/stores/appMessage'
-import { useCartStore } from '@/stores/cart'
-import { useProfileStore } from '@/stores/profile'
+import { useAuthStore } from "@/stores/auth";
+import { useAppMessage } from "@/stores/appMessage";
+import { useCartStore } from "@/stores/cart";
+import { useProfileStore } from "@/stores/profile";
 
-import { useField, useForm } from 'vee-validate'
-import * as yup from 'yup'
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 
-const authStore = useAuthStore()
-const appMessageStore = useAppMessage()
-const cartStore = useCartStore()
-const profileStore = useProfileStore()
+const authStore = useAuthStore();
+const appMessageStore = useAppMessage();
+const cartStore = useCartStore();
+const profileStore = useProfileStore();
 
+const authIsProcess = ref(false);
 
-const authIsProcess = ref(false)
-
-const { handleSubmit, submitCount, isSubmitting} = useForm()
+const { handleSubmit, submitCount, isSubmitting } = useForm();
 
 const {
   value: emailU,
   errorMessage: errorEmail,
   handleBlur: blurEmail,
-  meta: metaEmail
+  meta: metaEmail,
 } = useField(
-  'emailU',
+  "emailU",
   yup
     .string()
-    .email('Введите корректный email')
-    .required('Введите ваш email')
+    .email("Введите корректный email")
+    .required("Введите ваш email")
     .trim()
-)
+);
 
 const {
   value: pswU,
   errorMessage: errorPsw,
   handleBlur: blurPsw,
-  meta: metaPsw
-} = useField('pswU', yup.string().required('Введите пароль').trim())
-
+  meta: metaPsw,
+} = useField("pswU", yup.string().required("Введите пароль").trim());
 
 const isTooManyAttempts = computed(() => {
-  return submitCount.value >= 10
-})
+  return submitCount.value >= 10;
+});
 
 const isSubmitActive = computed(() => {
-  return emailU.value && pswU.value
-})
+  return emailU.value && pswU.value;
+});
 
-const loginHandler = handleSubmit(async (values , {setErrors}) => {
-  authIsProcess.value = true
-  const res =  await authStore.login(values)
+const loginHandler = handleSubmit(async (values, { setErrors }) => {
+  authIsProcess.value = true;
+  const res = await authStore.login(values);
   if (res instanceof Error) {
-    setErrors({pswU: res.message})
+    setErrors({ pswU: res.message });
   }
-  authIsProcess.value = false
-})
+  authIsProcess.value = false;
+});
 
 function rememberPassword() {
-  console.log('Remember password')
+  console.log("Remember password");
 }
 </script>

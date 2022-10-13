@@ -3,13 +3,13 @@
     <div class="input-block space-y-2">
       <label>Email</label>
 
-      <!-- :inputType="errorName && metaName.touched ? 'solid-error' : 'solid'" -->
+      <!-- :inputType="errorName && metaName.touched ? 'border-error' : 'border'" -->
 
       <app-input
         v-model.trim="emailRem"
         @blur="blurEmailRem"
         :inputType="
-          errorEmailRem && metaEmailRem.touched ? 'solid-error' : 'solid'
+          errorEmailRem && metaEmailRem.touched ? 'border-error' : 'border'
         "
         inputSize="lg"
       />
@@ -21,7 +21,12 @@
       </div>
     </div>
     <div class="text-left">
-      <app-button class="mt-4" :disabled="!isBtnActive || isSubmitting" type="submit" btnSize="lg">
+      <app-button
+        class="mt-4"
+        :disabled="!isBtnActive || isSubmitting"
+        type="submit"
+        btnSize="lg"
+      >
         <svg
           v-if="isSubmitting"
           role="status"
@@ -46,34 +51,34 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import AppInput from '@/components/UI/Forms/AppInput.vue'
-import AppButton from '@/components/UI/Buttons/AppButton.vue'
-import { useField, useForm } from 'vee-validate'
-import * as yup from 'yup'
+import { ref, computed } from "vue";
+import AppInput from "@/components/UI/Forms/AppInput.vue";
+import AppButton from "@/components/UI/Buttons/AppButton.vue";
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 
-const { handleSubmit, submitCount, isSubmitting } = useForm()
+const { handleSubmit, submitCount, isSubmitting } = useForm();
 
 const {
   value: emailRem,
   handleBlur: blurEmailRem,
   errorMessage: errorEmailRem,
-  meta: metaEmailRem
+  meta: metaEmailRem,
 } = useField(
-  'emailRem',
+  "emailRem",
   yup
     .string()
-    .email('Введите корректный email')
-    .required('Введите ваш email')
+    .email("Введите корректный email")
+    .required("Введите ваш email")
     .trim()
-)
+);
 
 const isBtnActive = computed(() => {
-    return !!emailRem.value
-})
+  return !!emailRem.value;
+});
 
-const onRemember = handleSubmit((values, {resetForm}) => {
-    console.log('Восстановление пароля', values)
-    resetForm()
-})
+const onRemember = handleSubmit((values, { resetForm }) => {
+  console.log("Восстановление пароля", values);
+  resetForm();
+});
 </script>

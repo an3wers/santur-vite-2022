@@ -10,7 +10,7 @@
           inputSize="md"
           autocomplete="on"
           :inputType="
-            oldPswError && oldPswRefMeta.touched ? 'solid-error' : 'solid'
+            oldPswError && oldPswRefMeta.touched ? 'border-error' : 'border'
           "
           @blur="oldPswBlur"
         />
@@ -30,7 +30,7 @@
           inputSize="md"
           autocomplete="on"
           :inputType="
-            newPswError && newPswRefMeta.touched ? 'solid-error' : 'solid'
+            newPswError && newPswRefMeta.touched ? 'border-error' : 'border'
           "
           @blur="newPswBlur"
         />
@@ -58,52 +58,55 @@
 </template>
 
 <script setup>
-import AppInput from '@/components/UI/Forms/AppInput.vue'
-import AppButton from '@/components/UI/Buttons/AppButton.vue'
-import { ref, computed, toRef } from 'vue'
+import AppInput from "@/components/UI/Forms/AppInput.vue";
+import AppButton from "@/components/UI/Buttons/AppButton.vue";
+import { ref, computed, toRef } from "vue";
 
-import { useField, useForm } from 'vee-validate'
-import * as yup from 'yup'
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 
-const emit = defineEmits(['changePassword'])
+const emit = defineEmits(["changePassword"]);
 
-const MIN_LENGTH_PSW = 6
-const { handleSubmit } = useForm()
+const MIN_LENGTH_PSW = 6;
+const { handleSubmit } = useForm();
 
 const {
   value: oldPswRef,
   errorMessage: oldPswError,
   handleBlur: oldPswBlur,
-  meta: oldPswRefMeta
-} = useField('oldPswRef', yup.string().required('Введите старый пароль').trim())
+  meta: oldPswRefMeta,
+} = useField(
+  "oldPswRef",
+  yup.string().required("Введите старый пароль").trim()
+);
 
 const {
   value: newPswRef,
   errorMessage: newPswError,
   handleBlur: newPswBlur,
-  meta: newPswRefMeta
+  meta: newPswRefMeta,
 } = useField(
-  'newPswRef',
+  "newPswRef",
   yup
     .string()
-    .required('Введите новый пароль')
+    .required("Введите новый пароль")
     .min(MIN_LENGTH_PSW, `Минимальная длина пароля ${MIN_LENGTH_PSW} символов`)
     .trim()
-)
+);
 
 const getChangeBtnIsActive = computed(() => {
   if (
-    oldPswRef.value !== '' &&
-    newPswRef.value !== '' &&
+    oldPswRef.value !== "" &&
+    newPswRef.value !== "" &&
     oldPswRef.value !== newPswRef.value
   ) {
-    return true
+    return true;
   }
-  return false
-})
+  return false;
+});
 
-const onChengePassword = handleSubmit(values => {
+const onChengePassword = handleSubmit((values) => {
   // console.log('values', values)
-  emit('changePassword', values)
-})
+  emit("changePassword", values);
+});
 </script>

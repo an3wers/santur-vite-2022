@@ -6,7 +6,7 @@
         <app-input
           v-model.trim="nameR"
           @blur="blurName"
-          :inputType="errorName && metaName.touched ? 'solid-error' : 'solid'"
+          :inputType="errorName && metaName.touched ? 'border-error' : 'border'"
           inputSize="lg"
         />
         <div v-if="errorName && metaName.touched" class="text-sm text-red-500">
@@ -19,7 +19,9 @@
           type="email"
           v-model.trim="emailR"
           @blur="blurEmail"
-          :inputType="errorEmail && metaEmail.touched ? 'solid-error' : 'solid'"
+          :inputType="
+            errorEmail && metaEmail.touched ? 'border-error' : 'border'
+          "
           inputSize="lg"
         />
         <div
@@ -35,7 +37,7 @@
           type="number"
           v-model.trim="innR"
           @blur="blurInn"
-          :inputType="errorInn && metaInn.touched ? 'solid-error' : 'solid'"
+          :inputType="errorInn && metaInn.touched ? 'border-error' : 'border'"
           inputSize="lg"
           maxlength="12"
         />
@@ -47,7 +49,7 @@
         <label for="">Название компании</label>
         <app-input
           :inputType="
-            errorCompany && metaCompany.touched ? 'solid-error' : 'solid'
+            errorCompany && metaCompany.touched ? 'border-error' : 'border'
           "
           v-model.trim="companyR"
           @blur="blurCompany"
@@ -96,83 +98,83 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import AppInput from '@/components/UI/Forms/AppInput.vue'
-import AppButton from '@/components/UI/Buttons/AppButton.vue'
-import { useField, useForm } from 'vee-validate'
-import * as yup from 'yup'
+import { ref, computed } from "vue";
+import AppInput from "@/components/UI/Forms/AppInput.vue";
+import AppButton from "@/components/UI/Buttons/AppButton.vue";
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 
-const { handleSubmit, submitCount, isSubmitting} = useForm()
+const { handleSubmit, submitCount, isSubmitting } = useForm();
 
-const registerProcessing = ref(false)
+const registerProcessing = ref(false);
 
-const MIN_LENGTH_VALUE = 4
-const MIN_LENGTH_INN = 10
-const MAX_LENGTH_INN = 12
+const MIN_LENGTH_VALUE = 4;
+const MIN_LENGTH_INN = 10;
+const MAX_LENGTH_INN = 12;
 
 const {
   value: nameR,
   errorMessage: errorName,
   handleBlur: blurName,
-  meta: metaName
+  meta: metaName,
 } = useField(
-  'nameR',
+  "nameR",
   yup
     .string()
-    .required('Введите ваше имя')
+    .required("Введите ваше имя")
     .min(MIN_LENGTH_VALUE, `Минимальная длина поля ${MIN_LENGTH_VALUE} символа`)
     .trim()
-)
+);
 
 const {
   value: emailR,
   errorMessage: errorEmail,
   handleBlur: blurEmail,
-  meta: metaEmail
+  meta: metaEmail,
 } = useField(
-  'emailR',
+  "emailR",
   yup
     .string()
-    .email('Введите корректный email')
-    .required('Введите ваш email')
+    .email("Введите корректный email")
+    .required("Введите ваш email")
     .trim()
-)
+);
 
 const {
   value: innR,
   errorMessage: errorInn,
   handleBlur: blurInn,
-  meta: metaInn
+  meta: metaInn,
 } = useField(
-  'innR',
+  "innR",
   yup
     .string()
-    .required('Введите ИНН компании')
+    .required("Введите ИНН компании")
     .min(MIN_LENGTH_INN, `Минимальная длина поля ${MIN_LENGTH_INN} символов`)
     .max(MAX_LENGTH_INN, `Максимальная длина поля ${MAX_LENGTH_INN} символов`)
     .trim()
-)
+);
 
 const {
   value: companyR,
   errorMessage: errorCompany,
   handleBlur: blurCompany,
-  meta: metaCompany
+  meta: metaCompany,
 } = useField(
-  'companyR',
+  "companyR",
   yup
     .string()
-    .required('Введите название компании')
+    .required("Введите название компании")
     .min(MIN_LENGTH_VALUE, `Минимальная длина поля ${MIN_LENGTH_VALUE} символа`)
     .trim()
-)
+);
 
 const registrIsActive = computed(() => {
-  return nameR.value && emailR.value && innR.value && companyR.value
-})
+  return nameR.value && emailR.value && innR.value && companyR.value;
+});
 
 const onRegister = handleSubmit((values, { resetForm }) => {
-  console.log('Форма регистрации', values)
-  resetForm()
-})
+  console.log("Форма регистрации", values);
+  resetForm();
+});
 </script>

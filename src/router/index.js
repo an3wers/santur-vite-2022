@@ -27,6 +27,7 @@ const Search = () => import("@/pages/search.vue");
 const News = () => import("@/pages/about/news/index.vue");
 const NewsItem = () => import("@/pages/about/news/item.vue");
 const Contacts = () => import("@/pages/contact.vue");
+const Claim = () => import("@/pages/сlients/claim.vue");
 const NotFound = () => import("@/pages/404.vue");
 
 const routes = [
@@ -51,6 +52,7 @@ const routes = [
   { path: "/contact", component: Contacts },
   { path: "/about/news", component: News },
   { path: "/about/news/:id", component: NewsItem },
+  { path: "/clients/claim", component: Claim },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
 ];
 
