@@ -24,14 +24,14 @@
           <div class="space-y-6">
             <!-- Информер войти в профиль -->
             <app-informer v-if="!authStore.user.id" type="primary">
-              <p>
+              <div>
                 <a @click.prevent="authStore.openAuthModal()" href="!#"
                   >Войдите</a
                 >
                 в профиль для оформления заказа или
                 <RouterLink to="/registration">зарегистрируйтесь</RouterLink>,
                 если аккаунта еще нет.
-              </p>
+              </div>
             </app-informer>
             <!-- product-list -->
             <cart-product-list :products="cartStore.cartItems" />
@@ -63,20 +63,20 @@ import CartInfo from "@/components/cart/CartInfo.vue";
 import CartEmpty from "@/components/cart/CartEmpty.vue";
 import CartProductFreeForm from "@/components/cart/CartProductFreeForm.vue";
 import AppInformer from "@/components/AppInformer.vue";
-import { useAppMessage } from '../stores/appMessage'
+import { useAppMessage } from "../stores/appMessage";
 import PageLoader from "@/components/loaders/PageLoader.vue";
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
 const cartIsLoaded = ref(false);
-const { open } = useAppMessage()
+const { open } = useAppMessage();
 
 async function loadCart() {
   const res = await cartStore.getCart();
 
   if (res instanceof Error) {
     // error message
-    open('error', 'При загрузке корзины произошла ошибка', 'error')
+    open("error", "При загрузке корзины произошла ошибка", "error");
   }
   cartIsLoaded.value = true;
 }

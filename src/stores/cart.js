@@ -88,7 +88,7 @@ export const useCartStore = defineStore("cart", {
           this.cartItems = response.data.items;
           this.cartWeight = response.data.weight;
           this.cartContract = response.data.dg;
-          console.log("Корзина", response.data);
+          // console.log("Корзина", response.data);
           return response.data;
         } else {
           throw new Error("Error cart");

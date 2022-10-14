@@ -44,7 +44,7 @@
         <div class="input-group space-y-2">
           <label>Название компании</label>
           <app-input
-            v-model.trim="comapyName"
+            v-model.trim="companyName"
             type="text"
             inputType="border"
             inputSize="md"
@@ -90,7 +90,9 @@
       <app-button
         :disabled="!isBtnSubmit || isTooManyAttempts || isSubmitting"
         type="submit"
-        >Отправить</app-button
+      >
+        <btn-spinner v-if="isSubmitting" />
+        Отправить</app-button
       >
     </form>
   </div>
@@ -105,6 +107,8 @@ import { useAppMessage } from "@/stores/appMessage";
 import { useProfileStore } from "@/stores/profile";
 import { useField, useForm } from "vee-validate";
 import * as yup from "yup";
+import axios from "axios";
+import BtnSpinner from "@/components/UI/Spinner/BtnSpinner.vue";
 
 const { handleSubmit, submitCount, isSubmitting } = useForm();
 
@@ -152,11 +156,11 @@ const {
   { initialValue: profileStore.profile.email || "" }
 );
 const {
-  value: comapyName,
+  value: companyName,
   errorMessage: errorCompanyName,
   handleBlur: blurCompanyName,
   meta: metaCompanyName,
-} = useField("comapyName", yup.string(), {
+} = useField("companyName", yup.string(), {
   initialValue: profileStore.profile.subjInfo.name || "",
 });
 
@@ -204,13 +208,52 @@ const isTooManyAttempts = computed(() => {
   return submitCount.value >= 10;
 });
 
-const fromFeedbackHandler = handleSubmit((values, { resetForm }) => {
-  console.log("ФОРМА", values, submitCount.value);
-  resetForm();
-  appMessage.openWithTimer(
-    "success",
-    "Сообщение успешно отправлено",
-    "success"
-  );
+const fromFeedbackHandler = handleSubmit(async (values, { resetForm }) => {
+  const { name, companyName, comment, companyInn, email } = values;
+
+  /*
+
+  SendFeedback
+  authorname
+  subjectname
+  subjectinn
+  phone
+  email
+  descr
+
+
+  */
+
+  try {
+    const res = await axios({
+      method: "POST",
+      url: "https://isantur.ru/apissz/SendFeedback",
+      data: {
+        authorname: name,
+        subjectname: companyName,
+        subjectinn: companyInn,
+        email: email,
+        descr: comment,
+      },
+      withCredentials: true,
+    });
+
+    if (res.success) {
+      // console.log(res);
+      resetForm();
+      appMessage.openWithTimer(
+        "success",
+        "Сообщение успешно отправлено",
+        "success"
+      );
+    } else {
+      throw new Error(res.message || "При отправки формы произошла ошибка");
+    }
+  } catch (error) {
+    appMessage.openWithTimer("error", error.message, "error");
+    // console.log(error);
+  }
+
+  // console.log("ФОРМА", values, submitCount.value);
 });
 </script>

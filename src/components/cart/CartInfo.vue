@@ -125,9 +125,9 @@ async function contractHandler(val) {
   if (res instanceof Error) {
     appMessageStore.open("error", res.message, "error");
   } else {
-    await profileStore.loadProfile();
+    // await profileStore.loadProfile();
     await cartStore.getCart();
-    console.log("Contarct change", val);
+    // console.log("Contarct change", val);
   }
   cartStore.cartIsUpdated = true;
 }

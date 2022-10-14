@@ -178,8 +178,9 @@ import AppTextarea from "@/components/UI/Forms/AppTextarea.vue";
 import AppButton from "@/components/UI/Buttons/AppButton.vue";
 import { useField, useForm } from "vee-validate";
 import * as yup from "yup";
-import BtnSpinner from "../UI/Spinner/BtnSpinner.vue";
+import BtnSpinner from "@/components/UI/Spinner/BtnSpinner.vue";
 import { useAppMessage } from "@/stores/appMessage";
+import axios from "axios";
 
 const MIN_LENGTH_INN = 10;
 const MAX_LENGTH_INN = 12;
@@ -307,14 +308,68 @@ function uploadFileHandler(event) {
   }
 }
 
-const onSubmit = handleSubmit((values, { resetForm }) => {
-  formIsSubmiting.value = true;
-  resetForm();
-  selectedReason.value = "default";
-  console.log("Forms", values);
+const onSubmit = handleSubmit(async (values, { resetForm }) => {
+  const { name, phone, company, inn, email, comment } = values;
+  const data = new FormData();
 
-  formIsSubmiting.value = false;
-  appMessageStore.open("success", "Рекламация успешно отправлена", "success");
-  // Показать успешный месседж
+  data.append("authorname", name);
+  data.append("subjectname", company);
+  data.append("subjectinn", inn);
+  data.append("phone", phone);
+  data.append("email", email);
+  data.append("descr", comment);
+  data.append("reason", selectedReason.value);
+  data.append("file_1", formFiles.file_one);
+  data.append("file_2", formFiles.file_two);
+  data.append("file_3", formFiles.file_three);
+
+  // selectedReason.value
+
+  /*
+
+  SendClaim
+  поля формы:
+  authorname
+  subjectname
+  subjectinn
+  phone
+  email
+  descr - описание претензии
+  reason - причина обращ
+  file_1
+  file_2
+  file_3
+  
+  */
+
+  try {
+    formIsSubmiting.value = true;
+    const res = await axios({
+      method: "post",
+      url: "https://isantur.ru/apissz/SendClaim",
+      withCredentials: true,
+      data: data,
+    });
+
+    if (res.success) {
+    } else {
+      throw new Error(res.message || "При отправки формы произошла ошибка");
+    }
+
+    // Обнуляем данные
+    resetForm();
+    selectedReason.value = "default";
+    formFiles.file_one = "";
+    formFiles.file_two = "";
+    formFiles.file_three = "";
+
+    // console.log("Forms", values);
+
+    formIsSubmiting.value = false;
+    appMessageStore.open("success", "Рекламация успешно отправлена", "success");
+  } catch (error) {
+    // console.log(error);
+    appMessageStore.open("error", error, "error");
+  }
 });
 </script>

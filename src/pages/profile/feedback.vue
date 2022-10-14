@@ -4,12 +4,17 @@
       <app-informer type="primary" icon="info">
         <div>
           <div class="text-lg font-semibold">Прием рекламаций</div>
-          <p>
+          <div>
             У вас претензия или рекламация? Воспользуйтесь сервисом для приема
             рекламаций.
-          </p>
+          </div>
         </div>
-        <app-button class="-ml-4" btnType="link">Подать рекламацию</app-button>
+        <app-button
+          @click="$router.push({ path: '/clients/claim' })"
+          class="-ml-4"
+          btnType="link"
+          >Подать рекламацию</app-button
+        >
       </app-informer>
 
       <form-feedback v-if="feedbackIsLoaded" />
