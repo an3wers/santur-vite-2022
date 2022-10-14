@@ -10,14 +10,14 @@
     <!-- # Лоадер -->
 
     <h2 v-if="!cartStore.cartId">Информация о заказе</h2>
-    <h2 v-else>Заказ №{{cartStore.cartId}}</h2>
+    <h2 v-else>Заказ №{{ cartStore.cartId }}</h2>
 
     <!-- Выбор договора, если пользователь авторизован -->
     <div v-if="authStore.getIsAuth" class="input-block pb-4 space-y-2">
       <label class="font-semibold">Договор</label>
       <select
         class="w-full rounded-md border form-select py-2 text-base px-3 leading-5 bg-white border-transparent focus:border-primary focus:bg-white focus:ring focus:ring-blue-500 focus:ring-opacity-20"
-        :value="profileStore.profile.subjInfo.dgcode || ''"
+        :value="contarctSelected"
         @change="contractHandler($event.target.value)"
       >
         <option
@@ -95,7 +95,6 @@
         >Отменить изменения</app-button
       >
     </div>
-
   </div>
 </template>
 
@@ -115,13 +114,22 @@ const cartStore = useCartStore();
 const authStore = useAuthStore();
 const appMessageStore = useAppMessage();
 const router = useRouter();
-const contarctSelected = ref(profileStore.profile.subjInfo.dgcode || "");
+const contarctSelected = ref(
+  cartStore.cartContract || profileStore.profile.subjInfo.dgcode || ""
+);
 
-async function contractHandler(value) {
-  // await cartStore.changeContractInCart(value)
-  // await cartStore.getCart()
-  //  ? update cart
-  console.log("Contarct change", value);
+async function contractHandler(val) {
+  contarctSelected.value = val;
+  cartStore.cartIsUpdated = false;
+  const res = await cartStore.changeContractInCart(val);
+  if (res instanceof Error) {
+    appMessageStore.open("error", res.message, "error");
+  } else {
+    await profileStore.loadProfile();
+    await cartStore.getCart();
+    console.log("Contarct change", val);
+  }
+  cartStore.cartIsUpdated = true;
 }
 
 async function saveOrderHandler() {
@@ -140,18 +148,16 @@ async function saveOrderHandler() {
 }
 
 async function editOrderSaveHandler() {
-
-  router.push({path: '/checkout'})
+  router.push({ path: "/checkout" });
 
   // Сохраняю заказ и делаю редирект в заказ
   // const res = cartStore.cartConfirm('бн', '', '')
-
 }
 
 async function editOrderCancelHandler(id) {
-  // Чищю корзину и делаю редирект в заказ 
-  const res = await cartStore.cleanCart()
-  
+  // Чищю корзину и делаю редирект в заказ
+  const res = await cartStore.cleanCart();
+
   if (res instanceof Error) {
     appMessageStore.open(
       "error",
@@ -159,9 +165,8 @@ async function editOrderCancelHandler(id) {
       "error"
     );
   } else {
-    router.push({path: `/profile/orderhistory/${id}`})
-    await cartStore.getCart()
+    router.push({ path: `/profile/orderhistory/${id}` });
+    await cartStore.getCart();
   }
 }
-
 </script>

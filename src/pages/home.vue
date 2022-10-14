@@ -15,7 +15,7 @@
       <div class="container">
         <sale-products />
         <bottom-banner />
-        <news />
+        <news v-if="homeStore.news.length" />
       </div>
     </div>
   </div>
@@ -42,7 +42,7 @@ const homeStore = useHomeStore();
 async function loadHomePage() {
   // await homeStore.loadTopSlider();
   // await homeStore.loadNarrowSlider();
-  // await homeStore.loadNews();
+  await homeStore.loadNews();
   await homeStore.loadPopularCategory();
   await homeStore.loadSales();
   homeIsLoaded.value = true;

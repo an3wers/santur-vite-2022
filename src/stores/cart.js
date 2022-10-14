@@ -13,6 +13,7 @@ export const useCartStore = defineStore("cart", {
       cartWeight: "",
       cartSumRaw: 0,
       cartIsUpdated: true,
+      cartContract: "",
     };
   },
   getters: {},
@@ -44,14 +45,13 @@ export const useCartStore = defineStore("cart", {
           // console.log("Товар удален ", response.data);
           return response.data;
         } else {
-          throw new Error(response.message || 'При удалении товара из корзины произошла ошибка')
+          throw new Error(
+            response.message ||
+              "При удалении товара из корзины произошла ошибка"
+          );
         }
       } catch (error) {
-        appMessageStore.openWithTimer(
-          "error",
-          error.message,
-          "error"
-        );
+        appMessageStore.openWithTimer("error", error.message, "error");
         return error;
       }
     },
@@ -63,7 +63,7 @@ export const useCartStore = defineStore("cart", {
         if (response.success) {
           return response.data;
         } else {
-          throw new Error('При очищении корзины произошла ошибка')
+          throw new Error("При очищении корзины произошла ошибка");
         }
       } catch (error) {
         appMessageStore.openWithTimer(
@@ -87,7 +87,8 @@ export const useCartStore = defineStore("cart", {
           this.cartSumRaw = response.data.summ;
           this.cartItems = response.data.items;
           this.cartWeight = response.data.weight;
-          console.log('Корзина', response.data)
+          this.cartContract = response.data.dg;
+          console.log("Корзина", response.data);
           return response.data;
         } else {
           throw new Error("Error cart");
@@ -100,7 +101,7 @@ export const useCartStore = defineStore("cart", {
       try {
         const response = await useCustomFetch("apissz/GetCartShortInfo");
         if (response.success) {
-          console.log('getShortCart', response.data)
+          console.log("getShortCart", response.data);
           // this.cart = response.data
           this.cartCount = response.data.qtyitems;
           this.cartSum = response.data.summs;
@@ -126,14 +127,12 @@ export const useCartStore = defineStore("cart", {
         if (response.success) {
           return response.data;
         } else {
-          throw new Error(response.message || "При изменении количества произошла ошибка");
+          throw new Error(
+            response.message || "При изменении количества произошла ошибка"
+          );
         }
       } catch (error) {
-        appMessageStore.openWithTimer(
-          "error",
-          error.message,
-          "error"
-        );
+        appMessageStore.openWithTimer("error", error.message, "error");
         return error;
       }
     },
@@ -142,9 +141,17 @@ export const useCartStore = defineStore("cart", {
         const response = await useCustomFetch(
           `apissz/SelectDg/?dgCode=${code}`
         );
-        console.log(response.data); // ok
+        // console.log(response); // ok
+
+        if (response.success) {
+          return response;
+        } else {
+          throw new Error(
+            response.message || "При выборе договора произошла ошибка"
+          );
+        }
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     async cartConfirm(payMethod, comment, address, tip) {
@@ -156,7 +163,7 @@ export const useCartStore = defineStore("cart", {
         для черновика tip=draft, 
         для прайса tip=price
         */
-      //  debugger
+        //  debugger
         const response = await fetch(
           `https://isantur.ru/apissz/CartToOrd/?pay=${payMethod}&cmnt=${comment}&address=${address}&tip=${tip}`,
           {

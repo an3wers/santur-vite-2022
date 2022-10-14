@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useCustomFetch } from "@/utils/fetch";
+import axios from "axios";
 
 export const useHomeStore = defineStore("home", {
   // TODO: Перенести из стора в компоненты, нет смысла хранить в сторе
@@ -20,7 +21,7 @@ export const useHomeStore = defineStore("home", {
     },
     getPopularCategory(state) {
       // return state.popularCategory.filter((el, index) => index < 12);
-      return state.popularCategory
+      return state.popularCategory;
     },
     getNarrowBanner(state) {
       return state.narrowBanner;
@@ -82,14 +83,20 @@ export const useHomeStore = defineStore("home", {
       }
     },
     async loadNews() {
-      // try {
-      //   const response = await $fetch('/api/home/news-home', {
-      //     method: 'GET'
-      //   })
-      //   this.news = response
-      // } catch (error) {
-      //   console.log(error)
-      // }
+      try {
+        // const response = await $fetch('/api/home/news-home', {
+        //   method: 'GET'
+        // })
+
+        const response = await axios({
+          method: "POST",
+          url: "http://10.10.10.77:5168/api/post/fresh_news",
+        });
+
+        this.news = response.data.items || [];
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 });

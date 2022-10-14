@@ -1,18 +1,19 @@
 <template>
   <div class="news-list">
     <div class="grid grid-cols-2 xl:grid-cols-4 gap-6">
-      <div v-for="news in news" :key="news.id" class="news-list__body flex-col">
+      <div
+        v-for="news in homeStore.news"
+        :key="news.ID"
+        class="news-list__body flex-col"
+      >
         <div class="mb-2">
-          {{ news.date }}
+          {{ useDateFormatter(news.post_date) }}
         </div>
-        <a
-          to="!#"
-          class="hover:text-primary no-underline text-gray-900"
-        >
-          <div class="text-lg font-medium">
-            {{ news.title }}
-          </div>
-        </a>
+        <RouterLink
+          :to="`/about/news/${news.ID}`"
+          class="hover:text-primary no-underline text-gray-900 text-lg font-medium"
+          >{{ news.post_title }}
+        </RouterLink>
       </div>
     </div>
   </div>
@@ -20,8 +21,10 @@
 
 <script setup>
 import { useHomeStore } from "@/stores/home";
-// const homeStore = useHomeStore();
 import { ref } from "vue";
+import { useDateFormatter } from "../../utils/helpers";
+
+const homeStore = useHomeStore();
 
 const news = ref([
   {
