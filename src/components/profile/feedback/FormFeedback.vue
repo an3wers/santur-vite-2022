@@ -237,8 +237,8 @@ const fromFeedbackHandler = handleSubmit(async (values, { resetForm }) => {
       },
       withCredentials: true,
     });
-
-    if (res.success) {
+    // console.log(res);
+    if (res.data.success) {
       // console.log(res);
       resetForm();
       appMessage.openWithTimer(

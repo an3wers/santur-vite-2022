@@ -351,25 +351,31 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       data: data,
     });
 
-    if (res.success) {
+    console.log(res);
+
+    if (res.data.success) {
+      // Обнуляем данные
+      resetForm();
+      selectedReason.value = "default";
+      formFiles.file_one = "";
+      formFiles.file_two = "";
+      formFiles.file_three = "";
+
+      // console.log("Forms", values);
+
+      appMessageStore.open(
+        "success",
+        "Рекламация успешно отправлена",
+        "success"
+      );
     } else {
       throw new Error(res.message || "При отправки формы произошла ошибка");
     }
-
-    // Обнуляем данные
-    resetForm();
-    selectedReason.value = "default";
-    formFiles.file_one = "";
-    formFiles.file_two = "";
-    formFiles.file_three = "";
-
-    // console.log("Forms", values);
-
-    formIsSubmiting.value = false;
-    appMessageStore.open("success", "Рекламация успешно отправлена", "success");
   } catch (error) {
     // console.log(error);
     appMessageStore.open("error", error, "error");
   }
+
+  formIsSubmiting.value = false;
 });
 </script>
