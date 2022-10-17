@@ -351,7 +351,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       data: data,
     });
 
-    console.log(res);
+    // console.log(res);
 
     if (res.data.success) {
       // Обнуляем данные
@@ -374,8 +374,8 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   } catch (error) {
     // console.log(error);
     appMessageStore.open("error", error, "error");
+  } finally {
+    formIsSubmiting.value = false;
   }
-
-  formIsSubmiting.value = false;
 });
 </script>

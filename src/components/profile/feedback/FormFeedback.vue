@@ -226,8 +226,11 @@ const fromFeedbackHandler = handleSubmit(async (values, { resetForm }) => {
 
   try {
     const res = await axios({
-      method: "POST",
+      method: "post",
       url: "https://isantur.ru/apissz/SendFeedback",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
       data: {
         authorname: name,
         subjectname: companyName,
