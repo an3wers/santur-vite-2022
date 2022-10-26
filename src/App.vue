@@ -44,12 +44,9 @@ const profileStore = useProfileStore();
 const catalogStore = useCatalogStore();
 const authStore = useAuthStore();
 const cartStore = useCartStore();
-const orderStore = useOrderStore();
+// const orderStore = useOrderStore();
 
-// const loading = ref(null)
 const isLoaded = ref(false);
-
-// loading user
 
 async function loadState() {
   await authStore.setUser();
@@ -62,24 +59,4 @@ async function loadState() {
 }
 
 loadState();
-
-// check if catalog dawnloaded, then do not load
-// if (!catalogStore.productCatalog.length) {
-// await catalogStore.loadCatalog();
-// // }
-
-// // load favorities
-// async function loadFavorities() {
-//   await profileStore.getFavorities();
-// }
-
-// // load profile
-// // TODO: fix Error state
-// async function loadProfile() {
-//   await profileStore.loadProfile();
-// }
-
-// await loadProfile();
-// await loadFavorities();
-// await cartStore.getShortCart();
 </script>

@@ -1,6 +1,6 @@
 export const useConfig = () => {
   return {
-    API_BASE_URL: "https://isantur.ru/",
+    API_BASE_URL: "https://testv.santur.ru", //"https://isantur.ru/",
     PHONE_SITE: "73432700404",
     EMAIL_SITE: "santur@santur.ru",
     WHATSAPP_SITE: "79321217497",
